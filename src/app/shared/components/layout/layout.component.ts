@@ -31,7 +31,7 @@ import { HeaderComponent } from './header.component';
         ></div>
 
         <!-- Sidebar -->
-        <div class="relative flex w-full max-w-xs flex-1 flex-col bg-white dark:bg-gray-800 transform sidebar-shadow"
+        <div class="relative flex w-full max-w-xs flex-1 flex-col bg-gray-900 dark:bg-gray-950 transform sidebar-shadow"
              [class.animate-slide-in-left]="!isClosing"
              [class.animate-slide-out-left]="isClosing">
           <!-- Close button -->

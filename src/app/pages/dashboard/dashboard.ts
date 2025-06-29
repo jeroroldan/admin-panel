@@ -109,17 +109,6 @@ import { RouterModule } from '@angular/router';
           </a>
         </div>
       </div>
-
-      <!-- Tailwind CSS Test -->
-      <div class="bg-gradient-to-r from-green-400 to-blue-500 rounded-lg p-6 text-white">
-        <h2 class="text-2xl font-bold mb-2">🎉 ¡Tailwind CSS 3.x Funcionando!</h2>
-        <p class="text-green-100">Si puedes ver este diseño colorido y responsive, significa que Tailwind CSS está correctamente instalado y funcionando.</p>
-        <div class="mt-4 flex space-x-2">
-          <span class="px-3 py-1 bg-white/20 rounded-full text-sm">Responsive</span>
-          <span class="px-3 py-1 bg-white/20 rounded-full text-sm">Gradientes</span>
-          <span class="px-3 py-1 bg-white/20 rounded-full text-sm">Animaciones</span>
-        </div>
-      </div>
     </div>
   `,
   styles: [`
