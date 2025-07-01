@@ -1,7 +1,8 @@
 // customers.component.ts
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { AuthService } from '../../auth/auth.service';
 
 interface Customer {
   id: string;
@@ -363,10 +364,12 @@ interface Customer {
     </div>
   `,
 })
-export class CustomersComponent implements OnInit {
+export class CustomersComponent {
   searchTerm = '';
   statusFilter = '';
   sortBy = 'name';
+
+  constructor(private authService: AuthService) {}
 
   customers: Customer[] = [
     {
@@ -465,6 +468,10 @@ export class CustomersComponent implements OnInit {
 
   ngOnInit(): void {
     // Load customers
+  }
+
+  getCurrentUser() {
+    return this.authService.getCurrentUser();
   }
 
   getInitials(name: string): string {

@@ -1,7 +1,8 @@
 // sales.component.ts
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { AuthService } from '../../auth/auth.service';
 
 interface Sale {
   id: string;
@@ -380,10 +381,12 @@ interface Sale {
     </div>
   `,
 })
-export class SalesComponent implements OnInit {
+export class SalesComponent {
   searchTerm = '';
   dateFilter = '';
   statusFilter = '';
+
+  constructor(private authService: AuthService) {}
 
   sales: Sale[] = [
     {

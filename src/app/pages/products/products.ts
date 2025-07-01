@@ -1,8 +1,9 @@
 // products.component.ts
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { AuthService } from '../../auth/auth.service';
 
 interface Product {
   id: string;
@@ -274,10 +275,12 @@ interface Product {
     </div>
   `,
 })
-export class ProductsComponent implements OnInit {
+export class ProductsComponent {
   searchTerm = '';
   selectedCategory = '';
   selectedStatus = '';
+
+  constructor(private authService: AuthService) {}
 
   products: Product[] = [
     {
@@ -359,8 +362,8 @@ export class ProductsComponent implements OnInit {
     });
   }
 
-  ngOnInit(): void {
-    // Load products
+  getCurrentUser() {
+    return this.authService.getCurrentUser();
   }
 
   formatStatus(status: string): string {
