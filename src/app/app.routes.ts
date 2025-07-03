@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { AuthGuard } from './auth/guards/auth.guard';
 import { RoleGuard } from './auth/guards/role.guard';
+import { UserRole } from './auth';
 
 export const routes: Routes = [
   // Rutas de autenticación (públicas, sin layout)
@@ -13,7 +14,7 @@ export const routes: Routes = [
   {
     path: 'register',
     loadComponent: () =>
-      import('./auth/register/register.component').then((m) => m.RegisterComponent),
+      import('./auth/register/register').then((m) => m.Register),
     title: 'Register - Admin Panel',
   },
   {
@@ -36,12 +37,12 @@ export const routes: Routes = [
       },
     ],
   },
-
-  // Rutas protegidas con layout principal
   {
     path: '',
     loadComponent: () =>
-      import('./shared/layouts/main-layout.component').then((m) => m.MainLayoutComponent),
+      import('./shared/layouts/main-layout.component').then(
+        (m) => m.MainLayoutComponent
+      ),
     canActivate: [AuthGuard],
     children: [
       {
@@ -52,9 +53,12 @@ export const routes: Routes = [
       {
         path: 'dashboard',
         loadComponent: () =>
-          import('./pages/dashboard/dashboard').then((m) => m.DashboardComponent),
+          import('./pages/dashboard/dashboard').then(
+            (m) => m.DashboardComponent
+          ),
         title: 'Dashboard - Admin Panel',
         data: { breadcrumb: 'Dashboard' },
+        // ✅ Dashboard accesible para todos los roles autenticados
       },
       {
         path: 'products',
@@ -62,7 +66,10 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./pages/products/products').then((m) => m.ProductsComponent),
         title: 'Products - Admin Panel',
-        data: { breadcrumb: 'Products', roles: ['admin', 'manager'] },
+        data: {
+          breadcrumb: 'Products',
+          roles: ['admin', 'manager'] as UserRole[], // ✅ Tipado correcto
+        },
       },
       {
         path: 'sales',
@@ -70,33 +77,32 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./pages/sales/sales').then((m) => m.SalesComponent),
         title: 'Sales - Admin Panel',
-        data: { breadcrumb: 'Sales', roles: ['admin', 'manager', 'employee'] },
+        data: {
+          breadcrumb: 'Sales',
+          roles: ['admin', 'manager', 'employee'] as UserRole[], // ✅ Tipado correcto
+        },
       },
       {
         path: 'customers',
         canActivate: [RoleGuard],
         loadComponent: () =>
-          import('./pages/customers/customers').then((m) => m.CustomersComponent),
+          import('./pages/customers/customers').then(
+            (m) => m.CustomersComponent
+          ),
         title: 'Customers - Admin Panel',
-        data: { breadcrumb: 'Customers', roles: ['admin', 'manager'] },
+        data: {
+          breadcrumb: 'Customers',
+          roles: ['admin', 'manager'] as UserRole[], // ✅ Tipado correcto
+        },
       },
-      // Ruta futura para configuraciones
-      // {
-      //   path: 'settings',
-      //   canActivate: [RoleGuard],
-      //   loadComponent: () =>
-      //     import('./pages/settings/settings.component').then((m) => m.SettingsComponent),
-      //   title: 'Settings - Admin Panel',
-      //   data: { breadcrumb: 'Settings', roles: ['admin'] },
-      // },
     ],
   },
-
-  // Página de error 404
   {
     path: '**',
     loadComponent: () =>
-      import('./shared/components/not-found/not-found').then((m) => m.NotFoundComponent),
+      import('./shared/components/not-found/not-found').then(
+        (m) => m.NotFoundComponent
+      ),
     title: 'Page Not Found - Admin Panel',
   },
 ];

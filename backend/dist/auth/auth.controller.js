@@ -24,6 +24,7 @@ let AuthController = class AuthController {
         this.authService = authService;
     }
     async login(loginDto) {
+        console.log(loginDto);
         return this.authService.login(loginDto);
     }
     async register(registerDto) {

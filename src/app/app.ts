@@ -44,16 +44,16 @@ export class AppComponent implements OnInit {
   ngOnInit() {
     console.log('🚀 App Component initialized - New routing system active');
     console.log('📍 Current URL:', window.location.href);
-    this.authService.showCurrentState();
+    // this.authService.showCurrentState();
   }
 
   clearAuth() {
-    this.authService.clearAllAuthData();
+    // this.authService.clearAllAuthData();
     window.location.href = '/login';
   }
 
   showState() {
-    this.authService.showCurrentState();
+    // this.authService.showCurrentState();
   }
 
   toggleDebug() {

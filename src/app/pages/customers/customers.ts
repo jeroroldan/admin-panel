@@ -24,10 +24,10 @@ import { CustomerFormComponent } from './customer-form.component';
       >
         <div>
           <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
-            Customers
+            Clientes
           </h1>
           <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
-            Manage your customer relationships
+            Administra tus relaciones con los clientes
           </p>
         </div>
         <div class="flex gap-3 mt-4 sm:mt-0">
@@ -84,16 +84,20 @@ import { CustomerFormComponent } from './customer-form.component';
             </button>
 
             <!-- Dropdown Menu -->
-            <div class="absolute right-0 top-full mt-1 w-64 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-10">
+            <div
+              class="absolute right-0 top-full mt-1 w-64 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-10"
+            >
               <div class="p-2">
                 <button
                   (click)="openContentProjectionModal()"
-                  class="w-full text-left px-3 py-2 text-sm rounded hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300">
+                  class="w-full text-left px-3 py-2 text-sm rounded hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300"
+                >
                   📝 Add Customer (Content Projection)
                 </button>
                 <button
                   (click)="openCustomContentModal()"
-                  class="w-full text-left px-3 py-2 text-sm rounded hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300">
+                  class="w-full text-left px-3 py-2 text-sm rounded hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300"
+                >
                   🎨 Custom Content Demo
                 </button>
               </div>
@@ -106,18 +110,18 @@ import { CustomerFormComponent } from './customer-form.component';
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         <div class="card">
           <p class="text-sm text-gray-600 dark:text-gray-400">
-            Total Customers
+            Total Clientes
           </p>
           <p class="text-2xl font-bold text-gray-900 dark:text-white mt-1">
             {{ store.totalCustomers() }}
           </p>
           <p class="text-xs text-green-600 dark:text-green-400 mt-2">
-            Total registered
+            Registro Total
           </p>
         </div>
         <div class="card">
           <p class="text-sm text-gray-600 dark:text-gray-400">
-            Active Customers
+            Activar Cliente
           </p>
           <p class="text-2xl font-bold text-gray-900 dark:text-white mt-1">
             {{ getActiveCustomersCount() }}
@@ -127,9 +131,7 @@ import { CustomerFormComponent } from './customer-form.component';
           </p>
         </div>
         <div class="card">
-          <p class="text-sm text-gray-600 dark:text-gray-400">
-            Average Spent
-          </p>
+          <p class="text-sm text-gray-600 dark:text-gray-400">Average Spent</p>
           <p class="text-2xl font-bold text-gray-900 dark:text-white mt-1">
             {{ getAverageSpent() }}
           </p>
@@ -138,21 +140,21 @@ import { CustomerFormComponent } from './customer-form.component';
           </p>
         </div>
         <div class="card">
-          <p class="text-sm text-gray-600 dark:text-gray-400">
-            Total Orders
-          </p>
+          <p class="text-sm text-gray-600 dark:text-gray-400">Total Orders</p>
           <p class="text-2xl font-bold text-gray-900 dark:text-white mt-1">
             {{ getTotalOrders() }}
           </p>
           <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">
-            All customers
+            Todos los clientes
           </p>
         </div>
       </div>
 
       <!-- Error Message -->
       @if (store.error()) {
-      <div class="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700">
+      <div
+        class="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700"
+      >
         {{ store.error() }}
         <button
           (click)="store.clearError()"
@@ -213,8 +215,12 @@ import { CustomerFormComponent } from './customer-form.component';
       <!-- Loading State -->
       @if (store.isLoading()) {
       <div class="flex justify-center items-center py-12">
-        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>
-        <span class="ml-2 text-gray-600 dark:text-gray-400">Loading customers...</span>
+        <div
+          class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"
+        ></div>
+        <span class="ml-2 text-gray-600 dark:text-gray-400"
+          >Loading customers...</span
+        >
       </div>
       }
 
@@ -257,9 +263,7 @@ import { CustomerFormComponent } from './customer-form.component';
                 <!-- Status Badge -->
                 <span
                   [class]="
-                    customer.isActive
-                      ? 'badge-success'
-                      : 'badge-warning'
+                    customer.isActive ? 'badge-success' : 'badge-warning'
                   "
                 >
                   {{ customer.isActive ? 'Active' : 'Inactive' }}
@@ -284,10 +288,24 @@ import { CustomerFormComponent } from './customer-form.component';
 
               @if (customer.address || customer.city || customer.country) {
               <div class="mt-2 text-sm text-gray-500 dark:text-gray-400">
-                <svg class="inline w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                <svg
+                  class="inline w-4 h-4 mr-1"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                  />
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                  />
                 </svg>
                 {{ getCustomerAddress(customer) }}
               </div>
@@ -325,7 +343,8 @@ import { CustomerFormComponent } from './customer-form.component';
       <!-- Pagination -->
       <div class="flex items-center justify-between">
         <div class="text-sm text-gray-500 dark:text-gray-400">
-          Showing {{ (store.pagination().page - 1) * store.pagination().limit + 1 }} to
+          Showing
+          {{ (store.pagination().page - 1) * store.pagination().limit + 1 }} to
           {{ getEndRecord() }}
           of {{ store.pagination().total }} customers
         </div>
@@ -340,12 +359,15 @@ import { CustomerFormComponent } from './customer-form.component';
           </button>
 
           <span class="px-3 py-2 text-sm text-gray-600 dark:text-gray-400">
-            Page {{ store.pagination().page }} of {{ store.pagination().totalPages }}
+            Page {{ store.pagination().page }} of
+            {{ store.pagination().totalPages }}
           </span>
 
           <button
             (click)="nextPage()"
-            [disabled]="store.pagination().page >= store.pagination().totalPages"
+            [disabled]="
+              store.pagination().page >= store.pagination().totalPages
+            "
             class="btn-secondary disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Next
@@ -389,7 +411,8 @@ import { CustomerFormComponent } from './customer-form.component';
       title="Add Customer (Content Projection)"
       subtitle="Using content projection approach"
       (customerSaved)="onCustomerSaved($event)"
-      (closed)="showContentProjectionModal = false">
+      (closed)="showContentProjectionModal = false"
+    >
     </app-customer-modal>
 
     <!-- Custom Content Projection Example -->
@@ -398,8 +421,8 @@ import { CustomerFormComponent } from './customer-form.component';
       title="Custom Content Modal"
       subtitle="Demonstrating custom content projection"
       [showForm]="false"
-      (closed)="showCustomContentModal = false">
-
+      (closed)="showCustomContentModal = false"
+    >
       <div class="space-y-4">
         <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
           <h4 class="text-blue-800 font-medium mb-2">Custom Content Example</h4>
@@ -410,19 +433,23 @@ import { CustomerFormComponent } from './customer-form.component';
           <div class="flex gap-2">
             <button
               class="px-3 py-1 bg-blue-600 text-white text-sm rounded hover:bg-blue-700"
-              (click)="doCustomAction()">
+              (click)="doCustomAction()"
+            >
               Custom Action
             </button>
             <button
               class="px-3 py-1 bg-gray-200 text-gray-700 text-sm rounded hover:bg-gray-300"
-              (click)="showCustomContentModal = false">
+              (click)="showCustomContentModal = false"
+            >
               Close
             </button>
           </div>
         </div>
 
         <div class="bg-green-50 border border-green-200 rounded-lg p-4">
-          <h4 class="text-green-800 font-medium mb-2">Benefits of Content Projection</h4>
+          <h4 class="text-green-800 font-medium mb-2">
+            Benefits of Content Projection
+          </h4>
           <ul class="text-green-700 text-sm space-y-1">
             <li>• More declarative and readable template syntax</li>
             <li>• Better component composition</li>
@@ -433,7 +460,7 @@ import { CustomerFormComponent } from './customer-form.component';
         </div>
       </div>
     </app-customer-modal>
-  `
+  `,
 })
 export class CustomersComponent implements OnInit {
   protected authService = inject(AuthService);
@@ -462,7 +489,7 @@ export class CustomersComponent implements OnInit {
     // Reload customers with new filter
     this.store.loadCustomers({
       page: 1,
-      filters: this.store.filters()
+      filters: this.store.filters(),
     });
   }
 
@@ -474,7 +501,7 @@ export class CustomersComponent implements OnInit {
     // Reload customers with new filter
     this.store.loadCustomers({
       page: 1,
-      filters: this.store.filters()
+      filters: this.store.filters(),
     });
   }
 
@@ -491,7 +518,7 @@ export class CustomersComponent implements OnInit {
       this.store.setPage(currentPage - 1);
       this.store.loadCustomers({
         page: currentPage - 1,
-        filters: this.store.filters()
+        filters: this.store.filters(),
       });
     }
   }
@@ -502,13 +529,13 @@ export class CustomersComponent implements OnInit {
       this.store.setPage(pagination.page + 1);
       this.store.loadCustomers({
         page: pagination.page + 1,
-        filters: this.store.filters()
+        filters: this.store.filters(),
       });
     }
   }
 
   // Customer actions
-  openAddCustomerModal(): void {
+   openAddCustomerModal(): void {
     // Create the modal
     this.currentModalRef = this.viewContainerRef.createComponent(ModalComponent);
     const modalInstance = this.currentModalRef.instance;
@@ -528,9 +555,9 @@ export class CustomersComponent implements OnInit {
     this.currentFormRef = this.viewContainerRef.createComponent(CustomerFormComponent);
     const formInstance = this.currentFormRef.instance;
 
-    // Configure form
-    formInstance.editMode = false;
-    formInstance.showDebug = false; // Set to true for development
+    // Configure form using setInput for signals
+    this.currentFormRef.setInput('editMode', false);
+    this.currentFormRef.setInput('showDebug', false);
 
     // Wait for form to initialize before tracking validity
     setTimeout(() => {
@@ -546,9 +573,19 @@ export class CustomersComponent implements OnInit {
     }, 50);
 
     // Handle form submission
-    formInstance.formSubmit.subscribe((customerData: CreateCustomerRequest) => {
-      this.store.createCustomer(customerData);
-      this.closeCurrentModal();
+    formInstance.formSubmit.subscribe((customerData: CreateCustomerRequest | UpdateCustomerRequest) => {
+      // Ensure required fields are present for CreateCustomerRequest
+      if (
+        typeof customerData.firstName === 'string' &&
+        typeof customerData.lastName === 'string' &&
+        typeof customerData.email === 'string'
+      ) {
+        this.store.createCustomer(customerData as CreateCustomerRequest);
+        this.closeCurrentModal();
+      } else {
+        // Optionally handle the error case here
+        console.error('Missing required fields for creating a customer', customerData);
+      }
     });
 
     // Set modal content to the form component
@@ -583,22 +620,25 @@ export class CustomersComponent implements OnInit {
     setTimeout(() => {
       if (!this.currentModalRef || !this.currentFormRef) return;
 
+      const formInstance = this.currentFormRef.instance;
+      const isEditMode = formInstance.editMode(); // Access signal value
+
       const buttons = [
         {
           label: 'Cancel',
           type: 'secondary' as const,
           action: () => {
             this.closeCurrentModal();
-          }
+          },
         },
         {
-          label: this.currentFormRef.instance.editMode ? 'Update Customer' : 'Add Customer',
+          label: isEditMode ? 'Update Customer' : 'Add Customer',
           type: 'primary' as const,
-          disabled: !this.currentFormRef.instance.isFormValid(),
+          disabled: !formInstance.isFormValid(),
           action: () => {
             this.currentFormRef?.instance.submitForm();
-          }
-        }
+          },
+        },
       ];
 
       this.currentModalRef.setInput('buttons', buttons);
@@ -624,7 +664,8 @@ export class CustomersComponent implements OnInit {
 
   editCustomer(customer: Customer): void {
     // Create the modal
-    this.currentModalRef = this.viewContainerRef.createComponent(ModalComponent);
+    this.currentModalRef =
+      this.viewContainerRef.createComponent(ModalComponent);
     const modalInstance = this.currentModalRef.instance;
 
     // Configure modal
@@ -635,22 +676,22 @@ export class CustomersComponent implements OnInit {
       showHeader: true,
       showFooter: true,
       closable: true,
-      centered: true
+      centered: true,
     });
 
     // Create the form component inside modal
-    this.currentFormRef = this.viewContainerRef.createComponent(CustomerFormComponent);
+    this.currentFormRef = this.viewContainerRef.createComponent(
+      CustomerFormComponent
+    );
     const formInstance = this.currentFormRef.instance;
 
-    // Configure form for editing
-    formInstance.customer = customer;
-    formInstance.editMode = true;
-    formInstance.showDebug = false; // Set to true for development
+    // Configure form for editing using setInput for signals
+    this.currentFormRef.setInput('customer', customer);
+    this.currentFormRef.setInput('editMode', true);
+    this.currentFormRef.setInput('showDebug', false);
 
     // Track form validity for button state
-    let isFormValid = false;
-    formInstance.formValid.subscribe(valid => {
-      isFormValid = valid;
+    formInstance.formValid.subscribe((valid) => {
       this.updateModalButtons();
     });
 
@@ -666,7 +707,10 @@ export class CustomersComponent implements OnInit {
 
     // Insert form component into modal body
     setTimeout(() => {
-      const modalBody = this.currentModalRef?.location.nativeElement.querySelector('.modal-body .flex-1');
+      const modalBody =
+        this.currentModalRef?.location.nativeElement.querySelector(
+          '.modal-body .flex-1'
+        );
       if (modalBody && formElement) {
         modalBody.appendChild(formElement);
       }
@@ -684,19 +728,20 @@ export class CustomersComponent implements OnInit {
       this.closeCurrentModal();
     });
   }
-
   deleteCustomer(customer: Customer): void {
-    this.modalService.confirm({
-      title: 'Delete Customer',
-      message: `Are you sure you want to delete ${customer.firstName} ${customer.lastName}? This action cannot be undone.`,
-      confirmText: 'Delete',
-      cancelText: 'Cancel',
-      type: 'danger'
-    }).then((confirmed) => {
-      if (confirmed) {
-        this.store.deleteCustomer(customer.id);
-      }
-    });
+    this.modalService
+      .confirm({
+        title: 'Delete Customer',
+        message: `Are you sure you want to delete ${customer.firstName} ${customer.lastName}? This action cannot be undone.`,
+        confirmText: 'Delete',
+        cancelText: 'Cancel',
+        type: 'danger',
+      })
+      .then((confirmed) => {
+        if (confirmed) {
+          this.store.deleteCustomer(customer.id);
+        }
+      });
   }
 
   // Helper methods for template
@@ -713,23 +758,35 @@ export class CustomersComponent implements OnInit {
   }
 
   getActiveCustomersCount(): number {
-    return this.store.customers().filter((customer: Customer) => customer.isActive).length;
+    return this.store
+      .customers()
+      .filter((customer: Customer) => customer.isActive).length;
   }
 
   getAverageSpent(): string {
     const customers = this.store.customers();
     if (customers.length === 0) return '$0';
 
-    const total = customers.reduce((sum: number, customer: Customer) => sum + customer.totalSpent, 0);
+    const total = customers.reduce(
+      (sum: number, customer: Customer) => sum + customer.totalSpent,
+      0
+    );
     return '$' + (total / customers.length).toFixed(2);
   }
 
   getTotalOrders(): number {
-    return this.store.customers().reduce((sum: number, customer: Customer) => sum + customer.totalOrders, 0);
+    return this.store
+      .customers()
+      .reduce(
+        (sum: number, customer: Customer) => sum + customer.totalOrders,
+        0
+      );
   }
 
   getCustomerAddress(customer: Customer): string {
-    const parts = [customer.address, customer.city, customer.country].filter(part => part && part.trim());
+    const parts = [customer.address, customer.city, customer.country].filter(
+      (part) => part && part.trim()
+    );
     return parts.join(', ');
   }
 
@@ -750,7 +807,7 @@ export class CustomersComponent implements OnInit {
     // Refresh the customers list
     this.store.loadCustomers({
       page: this.store.pagination().page,
-      filters: this.store.filters()
+      filters: this.store.filters(),
     });
   }
 

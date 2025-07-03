@@ -4,56 +4,64 @@ import {
   CanActivateChild,
   Router,
   ActivatedRouteSnapshot,
-  RouterStateSnapshot
+  RouterStateSnapshot,
 } from '@angular/router';
-import { Observable, of } from 'rxjs';
 import { AuthService } from '../auth.service';
 import { UserRole } from '../models/auth.interface';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class RoleGuard implements CanActivate, CanActivateChild {
-
-  constructor(
-    private authService: AuthService,
-    private router: Router
-  ) {}
+  constructor(private authService: AuthService, private router: Router) {}
 
   canActivate(
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
-  ): Observable<boolean> | Promise<boolean> | boolean {
+  ): boolean {
     return this.checkRole(route);
   }
 
   canActivateChild(
     childRoute: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
-  ): Observable<boolean> | Promise<boolean> | boolean {
+  ): boolean {
     return this.checkRole(childRoute);
   }
 
   private checkRole(route: ActivatedRouteSnapshot): boolean {
     const requiredRoles = route.data['roles'] as UserRole[];
 
+    console.log('🔍 RoleGuard check:', {
+      requiredRoles,
+      userRole: this.authService.getUserRole(),
+      isAuthenticated: this.authService.isAuthenticated(),
+    });
+
+    // Si no hay roles requeridos, permitir acceso
     if (!requiredRoles || requiredRoles.length === 0) {
       return true;
     }
 
+    // Verificar si está autenticado
     if (!this.authService.isAuthenticated()) {
-      this.router.navigate(['/auth/login']);
+      console.log('❌ Not authenticated, redirecting to login');
+      this.router.navigate(['/login'], {
+        queryParams: { returnUrl: route.url.join('/') },
+      });
       return false;
     }
 
+    // Verificar si tiene el rol requerido
     const hasRole = this.authService.hasAnyRole(requiredRoles);
 
     if (!hasRole) {
-      // Redirigir a página de acceso denegado o dashboard
+      console.log('❌ Insufficient permissions, redirecting to dashboard');
       this.router.navigate(['/dashboard']);
       return false;
     }
 
+    console.log('✅ Role check passed');
     return true;
   }
 }
