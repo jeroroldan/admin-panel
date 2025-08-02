@@ -14,8 +14,8 @@ const auth_module_1 = require("./auth/auth.module");
 const users_module_1 = require("./users/users.module");
 const products_module_1 = require("./products/products.module");
 const orders_module_1 = require("./orders/orders.module");
-const clients_module_1 = require("./clients/clients.module");
 const database_module_1 = require("./database/database.module");
+const customers_module_1 = require("./clients/customers.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -58,7 +58,7 @@ exports.AppModule = AppModule = __decorate([
             users_module_1.UsersModule,
             products_module_1.ProductsModule,
             orders_module_1.OrdersModule,
-            clients_module_1.ClientsModule,
+            customers_module_1.CustomersModule,
         ],
         controllers: [],
         providers: [],

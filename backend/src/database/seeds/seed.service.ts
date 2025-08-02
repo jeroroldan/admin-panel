@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 import * as bcrypt from 'bcryptjs';
 import { User, UserRole } from '../../users/entities/user.entity';
 import { Product } from '../../products/entities/product.entity';
-import { Client } from '../../clients/entities/client.entity';
+import { Customer } from '../../clients/entities/customer.entity';
 
 @Injectable()
 export class SeedService {
@@ -13,8 +13,8 @@ export class SeedService {
     private userRepository: Repository<User>,
     @InjectRepository(Product)
     private productRepository: Repository<Product>,
-    @InjectRepository(Client)
-    private clientRepository: Repository<Client>,
+    @InjectRepository(Customer)
+    private customerRepository: Repository<Customer>,
   ) {}
 
   async seed() {
@@ -22,7 +22,7 @@ export class SeedService {
 
     await this.seedUsers();
     await this.seedProducts();
-    await this.seedClients();
+    await this.seedCustomers();
 
     console.log('✅ Database seeding completed!');
   }
@@ -146,10 +146,10 @@ export class SeedService {
     }
   }
 
-  private async seedClients() {
-    const clientCount = await this.clientRepository.count();
-    if (clientCount === 0) {
-      const clients = [
+  private async seedCustomers() {
+    const customerCount = await this.customerRepository.count();
+    if (customerCount === 0) {
+      const customers = [
         {
           firstName: 'Juan',
           lastName: 'Pérez',
@@ -189,9 +189,9 @@ export class SeedService {
         },
       ];
 
-      for (const clientData of clients) {
-        const client = this.clientRepository.create(clientData);
-        await this.clientRepository.save(client);
+      for (const customerData of customers) {
+        const customer = this.customerRepository.create(customerData);
+        await this.customerRepository.save(customer);
       }
 
       console.log('👥 Clients seeded');

@@ -49,9 +49,9 @@ export class OrdersController {
 
   @ApiOperation({ summary: 'Obtener órdenes por cliente' })
   @ApiResponse({ status: 200, description: 'Órdenes del cliente obtenidas' })
-  @Get('client/:clientId')
-  getOrdersByClient(@Param('clientId') clientId: string) {
-    return this.ordersService.getOrdersByClient(clientId);
+  @Get('client/:customerId')
+  getOrdersByClient(@Param('customerId') customerId: string) {
+    return this.ordersService.getOrdersByCustomer(customerId);
   }
 
   @ApiOperation({ summary: 'Obtener una orden por ID' })

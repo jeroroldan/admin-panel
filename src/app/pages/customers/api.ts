@@ -43,23 +43,6 @@ export interface UpdateCustomerRequest {
   isActive?: boolean;
 }
 
-export interface CustomerListResponse {
-  customers: Customer[];
-  total: number;
-  page: number;
-  limit: number;
-  totalPages: number;
-}
-
-export interface CustomerFilters {
-  search?: string;
-  isActive?: boolean;
-  city?: string;
-  country?: string;
-  dateFrom?: string;
-  dateTo?: string;
-}
-
 @Injectable({
   providedIn: 'root'
 })
@@ -155,101 +138,6 @@ export class CustomersApiService {
     }
   ];
 
-  /**
-   * Development mode getCustomers with mock data
-   */
-  private getCustomersDevelopmentMode(
-    page: number = 1,
-    limit: number = 10,
-    filters?: CustomerFilters
-  ): Observable<CustomerListResponse> {
-    let filteredCustomers = [...this.mockCustomers];
-
-    // Apply filters
-    if (filters) {
-      if (filters.search) {
-        const searchTerm = filters.search.toLowerCase();
-        filteredCustomers = filteredCustomers.filter(customer =>
-          customer.firstName.toLowerCase().includes(searchTerm) ||
-          customer.lastName.toLowerCase().includes(searchTerm) ||
-          customer.email.toLowerCase().includes(searchTerm)
-        );
-      }
-      if (filters.isActive !== undefined) {
-        filteredCustomers = filteredCustomers.filter(customer => customer.isActive === filters.isActive);
-      }
-      if (filters.city) {
-        filteredCustomers = filteredCustomers.filter(customer =>
-          customer.city?.toLowerCase().includes(filters.city!.toLowerCase())
-        );
-      }
-      if (filters.country) {
-        filteredCustomers = filteredCustomers.filter(customer =>
-          customer.country?.toLowerCase().includes(filters.country!.toLowerCase())
-        );
-      }
-    }
-
-    // Apply pagination
-    const total = filteredCustomers.length;
-    const totalPages = Math.ceil(total / limit);
-    const startIndex = (page - 1) * limit;
-    const paginatedCustomers = filteredCustomers.slice(startIndex, startIndex + limit);
-
-    const response: CustomerListResponse = {
-      customers: paginatedCustomers,
-      total,
-      page,
-      limit,
-      totalPages
-    };
-
-    // Simulate API delay
-    return of(response).pipe(
-      tap(() => console.log(`[DEV MODE] Returning ${paginatedCustomers.length} customers (page ${page})`))
-    );
-  }
-
-  /**
-   * Obtener lista de clientes con filtros y paginación
-   */
-  getCustomers(
-    page: number = 1,
-    limit: number = 10,
-    filters?: CustomerFilters
-  ): Observable<CustomerListResponse> {
-    // Use development mode if enabled
-    if (this.isDevelopmentMode) {
-      return this.getCustomersDevelopmentMode(page, limit, filters);
-    }
-
-    let params = new HttpParams()
-      .set('page', page.toString())
-      .set('limit', limit.toString());
-
-    if (filters) {
-      if (filters.search) params = params.set('search', filters.search);
-      if (filters.isActive !== undefined) params = params.set('isActive', filters.isActive.toString());
-      if (filters.city) params = params.set('city', filters.city);
-      if (filters.country) params = params.set('country', filters.country);
-      if (filters.dateFrom) params = params.set('dateFrom', filters.dateFrom);
-      if (filters.dateTo) params = params.set('dateTo', filters.dateTo);
-    }
-
-    return this.http.get<CustomerListResponse>(this.baseUrl, { params })
-      .pipe(
-        map(response => ({
-          ...response,
-          customers: response.customers.map(customer => ({
-            ...customer,
-            createdAt: new Date(customer.createdAt),
-            updatedAt: new Date(customer.updatedAt),
-            lastOrderDate: customer.lastOrderDate ? new Date(customer.lastOrderDate) : undefined
-          }))
-        })),
-        catchError(this.handleError)
-      );
-  }
 
   /**
    * Obtener cliente por ID
@@ -435,27 +323,6 @@ export class CustomersApiService {
         }))),
         catchError(this.handleError)
       );
-  }
-
-  /**
-   * Exportar clientes a CSV
-   */
-  exportCustomers(filters?: CustomerFilters): Observable<Blob> {
-    let params = new HttpParams();
-
-    if (filters) {
-      if (filters.search) params = params.set('search', filters.search);
-      if (filters.isActive !== undefined) params = params.set('isActive', filters.isActive.toString());
-      if (filters.city) params = params.set('city', filters.city);
-      if (filters.country) params = params.set('country', filters.country);
-      if (filters.dateFrom) params = params.set('dateFrom', filters.dateFrom);
-      if (filters.dateTo) params = params.set('dateTo', filters.dateTo);
-    }
-
-    return this.http.get(`${this.baseUrl}/export`, {
-      params,
-      responseType: 'blob'
-    }).pipe(catchError(this.handleError));
   }
 
   /**

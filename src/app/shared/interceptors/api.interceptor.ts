@@ -3,7 +3,7 @@ import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent, HttpErrorResponse
 import { Observable, throwError } from 'rxjs';
 import { catchError, finalize } from 'rxjs/operators';
 import { AuthService } from '../../auth/auth.service';
-import { LoadingService } from '../services/loading.service';
+import { LoadingService } from '../services/loading-service';
 
 @Injectable()
 export class ApiInterceptor implements HttpInterceptor {

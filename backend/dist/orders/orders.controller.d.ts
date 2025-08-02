@@ -8,7 +8,7 @@ export declare class OrdersController {
     create(createOrderDto: CreateOrderDto, req: any): Promise<import("./entities/order.entity").Order>;
     findAll(status?: OrderStatus): Promise<import("./entities/order.entity").Order[]>;
     getOrderStats(): Promise<any>;
-    getOrdersByClient(clientId: string): Promise<import("./entities/order.entity").Order[]>;
+    getOrdersByClient(customerId: string): Promise<import("./entities/order.entity").Order[]>;
     findOne(id: string): Promise<import("./entities/order.entity").Order>;
     update(id: string, updateOrderDto: UpdateOrderDto): Promise<import("./entities/order.entity").Order>;
     updateStatus(id: string, status: OrderStatus): Promise<import("./entities/order.entity").Order>;

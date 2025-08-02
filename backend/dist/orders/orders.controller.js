@@ -33,8 +33,8 @@ let OrdersController = class OrdersController {
     getOrderStats() {
         return this.ordersService.getOrderStats();
     }
-    getOrdersByClient(clientId) {
-        return this.ordersService.getOrdersByClient(clientId);
+    getOrdersByClient(customerId) {
+        return this.ordersService.getOrdersByCustomer(customerId);
     }
     findOne(id) {
         return this.ordersService.findOne(id);
@@ -85,8 +85,8 @@ __decorate([
 __decorate([
     (0, swagger_1.ApiOperation)({ summary: 'Obtener órdenes por cliente' }),
     (0, swagger_1.ApiResponse)({ status: 200, description: 'Órdenes del cliente obtenidas' }),
-    (0, common_1.Get)('client/:clientId'),
-    __param(0, (0, common_1.Param)('clientId')),
+    (0, common_1.Get)('client/:customerId'),
+    __param(0, (0, common_1.Param)('customerId')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)

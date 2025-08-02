@@ -1,6 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne, OneToMany, JoinColumn } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
-import { Client } from '../../clients/entities/client.entity';
+import { Customer } from '../../clients/entities/customer.entity';
 import { User } from '../../users/entities/user.entity';
 import { OrderItem } from './order-item.entity';
 
@@ -32,13 +32,13 @@ export class Order {
   orderNumber: string;
 
   @ApiProperty({ description: 'Cliente que realizó el pedido' })
-  @ManyToOne(() => Client, client => client.orders)
-  @JoinColumn({ name: 'clientId' })
-  client: Client;
+  @ManyToOne(() => Customer, customer => customer.orders)
+  @JoinColumn({ name: 'customerId' })
+  customer: Customer;
 
   @ApiProperty({ description: 'ID del cliente' })
   @Column()
-  clientId: string;
+  customerId: string;
 
   @ApiProperty({ description: 'Usuario que procesó el pedido' })
   @ManyToOne(() => User)

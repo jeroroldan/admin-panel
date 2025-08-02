@@ -3,6 +3,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../auth/auth.service';
+import { ModalShare } from '../../shared/components/modal/modal-share';
 
 interface Sale {
   id: string;
@@ -18,7 +19,7 @@ interface Sale {
 @Component({
   selector: 'app-sales',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, ModalShare],
   template: `
     <div class="animate-fade-in">
       <!-- Page Header -->
@@ -27,10 +28,10 @@ interface Sale {
       >
         <div>
           <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
-            Sales
+            Ventas
           </h1>
           <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
-            Track and manage your sales orders
+            Realiza un seguimiento y gestiona tus pedidos de ventas
           </p>
         </div>
         <div class="flex gap-3 mt-4 sm:mt-0">
@@ -48,7 +49,7 @@ interface Sale {
                 d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10"
               />
             </svg>
-            Export
+            Exportar CSV
           </button>
           <button class="btn-primary">
             <svg
@@ -64,7 +65,7 @@ interface Sale {
                 d="M12 4v16m8-8H4"
               />
             </svg>
-            New Sale
+            Nuevas ventas
           </button>
         </div>
       </div>
@@ -75,7 +76,7 @@ interface Sale {
           <div class="flex items-center justify-between">
             <div>
               <p class="text-sm text-gray-600 dark:text-gray-400">
-                Total Sales
+                Ventas Totales
               </p>
               <p class="text-2xl font-bold text-gray-900 dark:text-white mt-1">
                 $125,430
@@ -99,13 +100,13 @@ interface Sale {
               </svg>
             </div>
           </div>
-</div>
+        </div>
 
         <div class="card">
           <div class="flex items-center justify-between">
             <div>
               <p class="text-sm text-gray-600 dark:text-gray-400">
-                Orders Today
+                Pedidos Hoy
               </p>
               <p class="text-2xl font-bold text-gray-900 dark:text-white mt-1">
                 42
@@ -129,7 +130,7 @@ interface Sale {
               </svg>
             </div>
           </div>
-</div>
+        </div>
 
         <div class="card">
           <div class="flex items-center justify-between">
@@ -165,7 +166,7 @@ interface Sale {
           <div class="flex items-center justify-between">
             <div>
               <p class="text-sm text-gray-600 dark:text-gray-400">
-                Pending Orders
+                Pedidos Pendientes
               </p>
               <p class="text-2xl font-bold text-gray-900 dark:text-white mt-1">
                 8
@@ -202,13 +203,13 @@ interface Sale {
               placeholder="Search by order number or customer..."
               class="input-field"
             />
-</div>
+          </div>
 
           <input
             type="date"
             [(ngModel)]="dateFilter"
             class="input-field w-full lg:w-auto"
-/>
+          />
 
           <select [(ngModel)]="statusFilter" class="input-field w-full lg:w-48">
             <option value="">All Status</option>
@@ -219,6 +220,18 @@ interface Sale {
           </select>
         </div>
       </div>
+
+      <!-- <app-modal
+        [isOpen]="showModal"
+        [config]="modalConfig"
+        [buttons]="modalButtons"
+        (closed)="onModalClosed()"
+      >
+        <div>
+          <h4>Contenido del modal</h4>
+          <p>Este es el contenido principal del modal.</p>
+        </div>
+      </app-modal> -->
 
       <!-- Sales Table -->
       <div class="card">
@@ -237,17 +250,17 @@ interface Sale {
                 <th
                   class="text-left py-3 px-4 text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
                 >
-                  Order
+                  Ordenes
                 </th>
                 <th
                   class="text-left py-3 px-4 text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
                 >
-                  Customer
+                  Cliente
                 </th>
                 <th
                   class="text-left py-3 px-4 text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
                 >
-                  Date
+                  Fecha
                 </th>
                 <th
                   class="text-left py-3 px-4 text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
@@ -262,17 +275,17 @@ interface Sale {
                 <th
                   class="text-left py-3 px-4 text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
                 >
-                  Status
+                  Estado
                 </th>
                 <th
                   class="text-left py-3 px-4 text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
                 >
-                  Payment
+                  Pago
                 </th>
                 <th
                   class="text-left py-3 px-4 text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
                 >
-                  Actions
+                  Acciones
                 </th>
               </tr>
             </thead>
@@ -458,4 +471,3 @@ export class SalesComponent {
     // Load sales data
   }
 }
-

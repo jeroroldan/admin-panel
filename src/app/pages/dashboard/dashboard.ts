@@ -207,7 +207,7 @@ import { AuthService } from '../../auth/auth.service';
   `,
   styles: []
 })
-export class DashboardComponent {
+export class Dashboard {
   constructor(
     private authService: AuthService
   ) {}

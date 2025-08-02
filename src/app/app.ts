@@ -41,11 +41,7 @@ export class AppComponent implements OnInit {
 
   constructor(private authService: AuthService) {}
 
-  ngOnInit() {
-    console.log('🚀 App Component initialized - New routing system active');
-    console.log('📍 Current URL:', window.location.href);
-    // this.authService.showCurrentState();
-  }
+  ngOnInit() {}
 
   clearAuth() {
     // this.authService.clearAllAuthData();

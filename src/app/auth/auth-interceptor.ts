@@ -2,7 +2,7 @@ import { inject } from '@angular/core';
 import { HttpInterceptorFn, HttpErrorResponse } from '@angular/common/http';
 import { catchError, throwError, finalize } from 'rxjs';
 import { AuthService } from './auth.service';
-import { LoadingService } from '../shared/services/loading.service';
+import { LoadingService } from '../shared/services/loading-service';
 import { Router } from '@angular/router';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {

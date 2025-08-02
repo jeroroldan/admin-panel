@@ -10,7 +10,6 @@ export class AuthService {
   isAuthenticated(): boolean {
     const token = localStorage.getItem('token');
     if (!token) {
-      console.log('❌ No token found');
       return false;
     }
 
@@ -18,20 +17,16 @@ export class AuthService {
       const payload = JSON.parse(atob(token.split('.')[1]));
       const now = Date.now() / 1000;
       const isValid = payload.exp > now;
-      console.log('🔍 Token validation:', { isValid, exp: payload.exp, now });
       return isValid;
     } catch (error) {
-      console.log('❌ Token parsing error:', error);
       return false;
     }
   }
 
   login(token: string, user: any): void {
-    console.log('📥 AuthService.login called with token and user');
 
     localStorage.setItem('token', token);
     localStorage.setItem('user', JSON.stringify(user));
-    console.log('✅ Token and user stored successfully');
   }
 
   logout(): void {
@@ -72,7 +67,6 @@ export class AuthService {
     }
 
     const hasRole = roles.includes(userRole);
-    console.log('🔍 Role check:', { userRole, requiredRoles: roles, hasRole });
     return hasRole;
   }
 

@@ -37,7 +37,6 @@ let AuthService = class AuthService {
     }
     async login(loginDto) {
         const user = await this.validateUser(loginDto.email, loginDto.password);
-        console.log(user);
         if (!user) {
             throw new common_1.UnauthorizedException('Credenciales inválidas');
         }

@@ -14,7 +14,7 @@ const orders_controller_1 = require("./orders.controller");
 const order_entity_1 = require("./entities/order.entity");
 const order_item_entity_1 = require("./entities/order-item.entity");
 const products_module_1 = require("../products/products.module");
-const clients_module_1 = require("../clients/clients.module");
+const customers_module_1 = require("../clients/customers.module");
 let OrdersModule = class OrdersModule {
 };
 exports.OrdersModule = OrdersModule;
@@ -23,7 +23,7 @@ exports.OrdersModule = OrdersModule = __decorate([
         imports: [
             typeorm_1.TypeOrmModule.forFeature([order_entity_1.Order, order_item_entity_1.OrderItem]),
             products_module_1.ProductsModule,
-            clients_module_1.ClientsModule,
+            customers_module_1.CustomersModule,
         ],
         controllers: [orders_controller_1.OrdersController],
         providers: [orders_service_1.OrdersService],

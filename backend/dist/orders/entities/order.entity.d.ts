@@ -1,4 +1,4 @@
-import { Client } from '../../clients/entities/client.entity';
+import { Customer } from '../../clients/entities/customer.entity';
 import { User } from '../../users/entities/user.entity';
 import { OrderItem } from './order-item.entity';
 export declare enum OrderStatus {
@@ -19,8 +19,8 @@ export declare enum PaymentStatus {
 export declare class Order {
     id: string;
     orderNumber: string;
-    client: Client;
-    clientId: string;
+    customer: Customer;
+    customerId: string;
     processedBy: User;
     processedByUserId: string;
     status: OrderStatus;

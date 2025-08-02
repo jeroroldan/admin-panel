@@ -12,7 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Order = exports.PaymentStatus = exports.OrderStatus = void 0;
 const typeorm_1 = require("typeorm");
 const swagger_1 = require("@nestjs/swagger");
-const client_entity_1 = require("../../clients/entities/client.entity");
+const customer_entity_1 = require("../../clients/entities/customer.entity");
 const user_entity_1 = require("../../users/entities/user.entity");
 const order_item_entity_1 = require("./order-item.entity");
 var OrderStatus;
@@ -47,15 +47,15 @@ __decorate([
 ], Order.prototype, "orderNumber", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({ description: 'Cliente que realizó el pedido' }),
-    (0, typeorm_1.ManyToOne)(() => client_entity_1.Client, client => client.orders),
-    (0, typeorm_1.JoinColumn)({ name: 'clientId' }),
-    __metadata("design:type", client_entity_1.Client)
-], Order.prototype, "client", void 0);
+    (0, typeorm_1.ManyToOne)(() => customer_entity_1.Customer, customer => customer.orders),
+    (0, typeorm_1.JoinColumn)({ name: 'customerId' }),
+    __metadata("design:type", customer_entity_1.Customer)
+], Order.prototype, "customer", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({ description: 'ID del cliente' }),
     (0, typeorm_1.Column)(),
     __metadata("design:type", String)
-], Order.prototype, "clientId", void 0);
+], Order.prototype, "customerId", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({ description: 'Usuario que procesó el pedido' }),
     (0, typeorm_1.ManyToOne)(() => user_entity_1.User),

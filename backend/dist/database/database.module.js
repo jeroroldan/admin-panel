@@ -12,7 +12,7 @@ const typeorm_1 = require("@nestjs/typeorm");
 const seed_service_1 = require("./seeds/seed.service");
 const user_entity_1 = require("../users/entities/user.entity");
 const product_entity_1 = require("../products/entities/product.entity");
-const client_entity_1 = require("../clients/entities/client.entity");
+const customer_entity_1 = require("../clients/entities/customer.entity");
 const order_entity_1 = require("../orders/entities/order.entity");
 const order_item_entity_1 = require("../orders/entities/order-item.entity");
 let DatabaseModule = class DatabaseModule {
@@ -21,7 +21,7 @@ exports.DatabaseModule = DatabaseModule;
 exports.DatabaseModule = DatabaseModule = __decorate([
     (0, common_1.Module)({
         imports: [
-            typeorm_1.TypeOrmModule.forFeature([user_entity_1.User, product_entity_1.Product, client_entity_1.Client, order_entity_1.Order, order_item_entity_1.OrderItem]),
+            typeorm_1.TypeOrmModule.forFeature([user_entity_1.User, product_entity_1.Product, customer_entity_1.Customer, order_entity_1.Order, order_item_entity_1.OrderItem]),
         ],
         providers: [seed_service_1.SeedService],
         exports: [seed_service_1.SeedService],

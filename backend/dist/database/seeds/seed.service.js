@@ -19,18 +19,18 @@ const typeorm_2 = require("typeorm");
 const bcrypt = require("bcryptjs");
 const user_entity_1 = require("../../users/entities/user.entity");
 const product_entity_1 = require("../../products/entities/product.entity");
-const client_entity_1 = require("../../clients/entities/client.entity");
+const customer_entity_1 = require("../../clients/entities/customer.entity");
 let SeedService = class SeedService {
-    constructor(userRepository, productRepository, clientRepository) {
+    constructor(userRepository, productRepository, customerRepository) {
         this.userRepository = userRepository;
         this.productRepository = productRepository;
-        this.clientRepository = clientRepository;
+        this.customerRepository = customerRepository;
     }
     async seed() {
         console.log('🌱 Starting database seeding...');
         await this.seedUsers();
         await this.seedProducts();
-        await this.seedClients();
+        await this.seedCustomers();
         console.log('✅ Database seeding completed!');
     }
     async seedUsers() {
@@ -146,10 +146,10 @@ let SeedService = class SeedService {
             console.log('📦 Products seeded');
         }
     }
-    async seedClients() {
-        const clientCount = await this.clientRepository.count();
-        if (clientCount === 0) {
-            const clients = [
+    async seedCustomers() {
+        const customerCount = await this.customerRepository.count();
+        if (customerCount === 0) {
+            const customers = [
                 {
                     firstName: 'Juan',
                     lastName: 'Pérez',
@@ -188,9 +188,9 @@ let SeedService = class SeedService {
                     notes: 'Compra por volumen',
                 },
             ];
-            for (const clientData of clients) {
-                const client = this.clientRepository.create(clientData);
-                await this.clientRepository.save(client);
+            for (const customerData of customers) {
+                const customer = this.customerRepository.create(customerData);
+                await this.customerRepository.save(customer);
             }
             console.log('👥 Clients seeded');
         }
@@ -201,7 +201,7 @@ exports.SeedService = SeedService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, typeorm_1.InjectRepository)(user_entity_1.User)),
     __param(1, (0, typeorm_1.InjectRepository)(product_entity_1.Product)),
-    __param(2, (0, typeorm_1.InjectRepository)(client_entity_1.Client)),
+    __param(2, (0, typeorm_1.InjectRepository)(customer_entity_1.Customer)),
     __metadata("design:paramtypes", [typeorm_2.Repository,
         typeorm_2.Repository,
         typeorm_2.Repository])

@@ -1,7 +1,7 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RegisterStore } from './register.store';
+import { RegisterStore } from './register-store';
 
 @Component({
   selector: 'app-register',

@@ -6,7 +6,7 @@ import { OrderItem } from './entities/order-item.entity';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { ProductsService } from '../products/products.service';
-import { ClientsService } from '../clients/clients.service';
+import { CustomersService } from '../clients/customers.service';
 
 @Injectable()
 export class OrdersService {
@@ -16,12 +16,12 @@ export class OrdersService {
     @InjectRepository(OrderItem)
     private orderItemRepository: Repository<OrderItem>,
     private productsService: ProductsService,
-    private clientsService: ClientsService,
+    private customersService: CustomersService,
   ) {}
 
   async create(createOrderDto: CreateOrderDto, userId: string): Promise<Order> {
     // Verificar que el cliente exista
-    await this.clientsService.findOne(createOrderDto.clientId);
+    await this.customersService.findOne(createOrderDto.customerId);
 
     // Generar número de orden único
     const orderNumber = await this.generateOrderNumber();
@@ -150,9 +150,9 @@ export class OrdersService {
     await this.orderRepository.remove(order);
   }
 
-  async getOrdersByClient(clientId: string): Promise<Order[]> {
+  async getOrdersByCustomer(customerId: string): Promise<Order[]> {
     return this.orderRepository.find({
-      where: { clientId },
+      where: { customerId },
       relations: ['items', 'items.product'],
       order: { createdAt: 'DESC' },
     });

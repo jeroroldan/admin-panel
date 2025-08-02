@@ -38,7 +38,7 @@ export class CreateOrderDto {
   })
   @IsString({ message: 'ID del cliente debe ser una cadena' })
   @IsNotEmpty({ message: 'ID del cliente es requerido' })
-  clientId: string;
+  customerId: string;
 
   @ApiProperty({
     description: 'Items de la orden',

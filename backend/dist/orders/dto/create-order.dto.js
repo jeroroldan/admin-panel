@@ -57,7 +57,7 @@ __decorate([
     (0, class_validator_1.IsString)({ message: 'ID del cliente debe ser una cadena' }),
     (0, class_validator_1.IsNotEmpty)({ message: 'ID del cliente es requerido' }),
     __metadata("design:type", String)
-], CreateOrderDto.prototype, "clientId", void 0);
+], CreateOrderDto.prototype, "customerId", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({
         description: 'Items de la orden',

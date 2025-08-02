@@ -19,16 +19,16 @@ const typeorm_2 = require("typeorm");
 const order_entity_1 = require("./entities/order.entity");
 const order_item_entity_1 = require("./entities/order-item.entity");
 const products_service_1 = require("../products/products.service");
-const clients_service_1 = require("../clients/clients.service");
+const customers_service_1 = require("../clients/customers.service");
 let OrdersService = class OrdersService {
-    constructor(orderRepository, orderItemRepository, productsService, clientsService) {
+    constructor(orderRepository, orderItemRepository, productsService, customersService) {
         this.orderRepository = orderRepository;
         this.orderItemRepository = orderItemRepository;
         this.productsService = productsService;
-        this.clientsService = clientsService;
+        this.customersService = customersService;
     }
     async create(createOrderDto, userId) {
-        await this.clientsService.findOne(createOrderDto.clientId);
+        await this.customersService.findOne(createOrderDto.customerId);
         const orderNumber = await this.generateOrderNumber();
         let subtotal = 0;
         const orderItems = [];
@@ -122,9 +122,9 @@ let OrdersService = class OrdersService {
         }
         await this.orderRepository.remove(order);
     }
-    async getOrdersByClient(clientId) {
+    async getOrdersByCustomer(customerId) {
         return this.orderRepository.find({
-            where: { clientId },
+            where: { customerId },
             relations: ['items', 'items.product'],
             order: { createdAt: 'DESC' },
         });
@@ -172,6 +172,6 @@ exports.OrdersService = OrdersService = __decorate([
     __metadata("design:paramtypes", [typeorm_2.Repository,
         typeorm_2.Repository,
         products_service_1.ProductsService,
-        clients_service_1.ClientsService])
+        customers_service_1.CustomersService])
 ], OrdersService);
 //# sourceMappingURL=orders.service.js.map

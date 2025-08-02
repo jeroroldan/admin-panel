@@ -5,7 +5,7 @@ export declare class CreateOrderItemDto {
     unitPrice?: number;
 }
 export declare class CreateOrderDto {
-    clientId: string;
+    customerId: string;
     items: CreateOrderItemDto[];
     status?: OrderStatus;
     paymentStatus?: PaymentStatus;

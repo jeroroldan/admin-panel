@@ -5,13 +5,13 @@ import { OrdersController } from './orders.controller';
 import { Order } from './entities/order.entity';
 import { OrderItem } from './entities/order-item.entity';
 import { ProductsModule } from '../products/products.module';
-import { ClientsModule } from '../clients/clients.module';
+import { CustomersModule } from '../clients/customers.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Order, OrderItem]),
     ProductsModule,
-    ClientsModule,
+    CustomersModule,
   ],
   controllers: [OrdersController],
   providers: [OrdersService],

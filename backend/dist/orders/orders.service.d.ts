@@ -4,13 +4,13 @@ import { OrderItem } from './entities/order-item.entity';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { ProductsService } from '../products/products.service';
-import { ClientsService } from '../clients/clients.service';
+import { CustomersService } from '../clients/customers.service';
 export declare class OrdersService {
     private orderRepository;
     private orderItemRepository;
     private productsService;
-    private clientsService;
-    constructor(orderRepository: Repository<Order>, orderItemRepository: Repository<OrderItem>, productsService: ProductsService, clientsService: ClientsService);
+    private customersService;
+    constructor(orderRepository: Repository<Order>, orderItemRepository: Repository<OrderItem>, productsService: ProductsService, customersService: CustomersService);
     create(createOrderDto: CreateOrderDto, userId: string): Promise<Order>;
     findAll(status?: OrderStatus): Promise<Order[]>;
     findOne(id: string): Promise<Order>;
@@ -18,7 +18,7 @@ export declare class OrdersService {
     updateStatus(id: string, status: OrderStatus): Promise<Order>;
     updatePaymentStatus(id: string, paymentStatus: PaymentStatus): Promise<Order>;
     remove(id: string): Promise<void>;
-    getOrdersByClient(clientId: string): Promise<Order[]>;
+    getOrdersByCustomer(customerId: string): Promise<Order[]>;
     getOrderStats(): Promise<any>;
     private generateOrderNumber;
 }
