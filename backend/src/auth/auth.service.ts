@@ -45,16 +45,50 @@ export class AuthService {
       role: user.role
     };
 
+    const access_token = this.jwtService.sign(payload);
+    const refresh_token = this.jwtService.sign(payload, { expiresIn: '7d' });
+
     return {
-      access_token: this.jwtService.sign(payload),
+      access_token: access_token ?? null,
+      refresh_token: refresh_token ?? null,
       user: {
-        id: user.id,
         email: user.email,
         firstName: user.firstName,
         lastName: user.lastName,
         role: user.role,
       },
     };
+  }
+
+  async refreshToken(refreshToken: string) {
+    try {
+      const payload = this.jwtService.verify(refreshToken);
+      const user = await this.userRepository.findOne({ where: { id: payload.sub } });
+      if (!user) {
+        throw new UnauthorizedException('Invalid refresh token');
+      }
+
+      const newPayload: JwtPayload = {
+        email: user.email,
+        sub: user.id,
+        role: user.role
+      };
+
+      const access_token = this.jwtService.sign(newPayload);
+
+      return {
+        access_token,
+        user: {
+          id: user.id,
+          email: user.email,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          role: user.role,
+        },
+      };
+    } catch (error) {
+      throw new UnauthorizedException('Invalid refresh token');
+    }
   }
 
   async register(registerDto: RegisterDto) {
@@ -85,8 +119,12 @@ export class AuthService {
       role: savedUser.role
     };
 
+    const access_token = this.jwtService.sign(payload);
+    const refresh_token = this.jwtService.sign(payload, { expiresIn: '7d' });
+
     return {
-      access_token: this.jwtService.sign(payload),
+      access_token,
+      refresh_token,
       user: {
         id: savedUser.id,
         email: savedUser.email,

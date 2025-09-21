@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToMany } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToMany, DeleteDateColumn } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { Order } from '../../orders/entities/order.entity';
 
@@ -71,4 +71,8 @@ export class Customer {
   @ApiProperty({ description: 'Fecha de última actualización' })
   @UpdateDateColumn()
   updatedAt: Date;
+
+  @ApiProperty({ description: 'Fecha de eliminación suave' })
+  @DeleteDateColumn()
+  deletedAt?: Date;
 }

@@ -1,4 +1,5 @@
 import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
+import { IsNull } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Like } from 'typeorm';
 
@@ -17,8 +18,9 @@ export class CustomersService {
   async create(createCustomerDto: CreateCustomerDto): Promise<Customer> {
     // Verificar si ya existe un cliente con el mismo email
     if (createCustomerDto.email) {
-      const existingCustomer = await this.customerRepository.findOne({
-        where: { email: createCustomerDto.email },
+      const existingCustomer = await this.customerRepository.findOneBy({
+        email: createCustomerDto.email,
+        deletedAt: IsNull(),
       });
 
       if (existingCustomer) {
@@ -32,12 +34,14 @@ export class CustomersService {
   /**
    * Find all customers with optional search, pagination, and sorting.
    * @param search Optional search term to filter customers by name, email, or phone.
+   * @param isActive Optional filter for active/inactive customers.
    * @param page Page number for pagination (default is 1).
    * @param limit Number of customers per page (default is 10).
    * @returns Paginated list of customers with total count and total pages.
    */
   async findAll(
     search?: string,
+    isActive?: boolean,
     page: number = 1,
     limit: number = 10,
   ): Promise<
@@ -50,13 +54,18 @@ export class CustomersService {
   > {
     const skip = (page - 1) * limit;
 
-    let queryBuilder = this.customerRepository.createQueryBuilder('customer');
+    let queryBuilder = this.customerRepository.createQueryBuilder('customer')
+      .where('customer.deletedAt IS NULL');
 
     if (search) {
-      queryBuilder = queryBuilder.where(
+      queryBuilder = queryBuilder.andWhere(
         '(customer.firstName LIKE :search OR customer.lastName LIKE :search OR customer.email LIKE :search OR customer.phone LIKE :search OR customer.company LIKE :search)',
         { search: `%${search}%` },
       );
+    }
+
+    if (isActive !== undefined) {
+      queryBuilder = queryBuilder.andWhere('customer.isActive = :isActive', { isActive });
     }
 
     queryBuilder = queryBuilder
@@ -79,7 +88,6 @@ export class CustomersService {
     );
   }
 
-  // ...existing code...
 
   async findOne(id: string): Promise<ApiResponse<Customer>> {
     const customer = await this.customerRepository.findOne({
@@ -97,38 +105,49 @@ export class CustomersService {
     );
   }
 
-  // async update(
-  //   id: string,
-  //   updateCustomerDto: UpdateCustomerDto,
-  // ): Promise<Customer> {
-  //   const customer = await this.findOne(id);
+  async update(
+    id: string,
+    updateCustomerDto: UpdateCustomerDto,
+  ): Promise<ApiResponse<Customer>> {
+    const response = await this.findOne(id);
+    const customer = response.data;
 
-  //   // Si se está actualizando el email, verificar que no exista otro cliente con ese email
-  //   if (updateCustomerDto.email && updateCustomerDto.email !== customer.email) {
-  //     const existingCustomer = await this.customerRepository.findOne({
-  //       where: { email: updateCustomerDto.email },
-  //     });
+    // Si se está actualizando el email, verificar que no exista otro cliente con ese email
+    if (updateCustomerDto.email && updateCustomerDto.email !== customer.email) {
+      const existingCustomer = await this.customerRepository.findOneBy({
+        email: updateCustomerDto.email,
+        deletedAt: IsNull(),
+      });
 
-  //     if (existingCustomer) {
-  //       throw new ConflictException('Ya existe un cliente con este email');
-  //     }
-  //   }
+      if (existingCustomer) {
+        throw new ConflictException('Ya existe un cliente con este email');
+      }
+    }
 
-  //   await this.customerRepository.update(id, updateCustomerDto);
-  //   return this.findOne(id);
-  // }
+    await this.customerRepository.update(id, updateCustomerDto);
+    const updatedResponse = await this.findOne(id);
+    return ApiResponse.success(
+      updatedResponse.data,
+      'Cliente actualizado exitosamente',
+    );
+  }
 
-  // async remove(id: string): Promise<void> {
-  //   const customer = await this.findOne(id);
-  //   await this.customerRepository.remove(customer);
-  // }
+  async remove(id: string): Promise<ApiResponse<{ message: string }>> {
+    const response = await this.findOne(id);
+    const customer = response.data;
+    await this.customerRepository.softRemove(customer);
+    return ApiResponse.success(
+      { message: `Cliente ${id} eliminado exitosamente` },
+      'Cliente eliminado exitosamente',
+    );
+  }
 
   async findByEmail(email: string): Promise<Customer | undefined> {
-    return this.customerRepository.findOne({ where: { email } });
+    return this.customerRepository.findOneBy({ email, deletedAt: IsNull() });
   }
 
   async findByPhone(phone: string): Promise<Customer | undefined> {
-    return this.customerRepository.findOne({ where: { phone } });
+    return this.customerRepository.findOneBy({ phone, deletedAt: IsNull() });
   }
 
   async getCustomerStats(id: string): Promise<any> {

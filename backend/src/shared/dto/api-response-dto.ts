@@ -4,21 +4,26 @@ export class ApiResponse<T> {
   message?: string;
   success: boolean;
   timestamp: string;
+  statusCode?: number;
+  path?: string;
 
-  constructor(data: T, message?: string, success: boolean = true) {
+  constructor(data: T, message?: string, success: boolean = true, statusCode?: number, path?: string) {
     this.data = data;
     this.message = message;
     this.success = success;
     this.timestamp = new Date().toISOString();
+    this.statusCode = statusCode;
+    this.path = path;
   }
 
   static success<T>(data: T, message?: string): ApiResponse<T> {
     return new ApiResponse(data, message, true);
   }
 
-  static error<T>(data: T, message: string): ApiResponse<T> {
-    return new ApiResponse(data, message, false);
+  static error<T>(data: T, message: string, statusCode: number, path?: string): ApiResponse<T> {
+    return new ApiResponse(data, message, false, statusCode, path);
   }
+
 
   static created<T>(data: T, message?: string): ApiResponse<T> {
     return new ApiResponse(

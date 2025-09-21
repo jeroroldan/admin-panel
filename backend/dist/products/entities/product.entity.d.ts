@@ -1,4 +1,5 @@
 import { OrderItem } from '../../orders/entities/order-item.entity';
+import { SaleItem } from '../../sales/entities/sale-item.entity';
 export declare enum ProductStatus {
     ACTIVE = "active",
     INACTIVE = "inactive",
@@ -25,6 +26,7 @@ export declare class Product {
     isActive: boolean;
     tags: string[];
     orderItems: OrderItem[];
+    saleItems: SaleItem[];
     createdAt: Date;
     updatedAt: Date;
 }

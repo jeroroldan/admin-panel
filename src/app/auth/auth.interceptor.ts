@@ -8,21 +8,11 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const authService = inject(AuthService);
   const router = inject(Router);
 
-  // Agregar token a las peticiones
-  const token = authService.getToken();
-
-  if (token) {
-    req = req.clone({
-      setHeaders: {
-        Authorization: `Bearer ${token}`
-      }
-    });
-  }
-
+  // No add Authorization header, rely on httpOnly cookie
   return next(req).pipe(
     catchError((error: HttpErrorResponse) => {
       if (error.status === 401) {
-        // Token expirado o inválido
+        // Session expired
         authService.logout();
         router.navigate(['/auth/login']);
       }

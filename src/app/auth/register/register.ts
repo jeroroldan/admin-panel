@@ -1,12 +1,13 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { RegisterStore } from './register-store';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, ReactiveFormsModule],
   template: `
     <div
       class="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 p-4"
@@ -19,7 +20,7 @@ import { RegisterStore } from './register-store';
           <p class="text-gray-600">Registra tu cuenta de administrador</p>
         </div>
 
-        <form (ngSubmit)="onSubmit()" class="space-y-6">
+        <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="space-y-6">
           <!-- First Name Field -->
           <div>
             <label
@@ -31,9 +32,7 @@ import { RegisterStore } from './register-store';
             <input
               id="firstName"
               type="text"
-              [(ngModel)]="registerStore.registerFormData().firstName"
-              (input)="onFirstNameChange($event)"
-              name="firstName"
+              formControlName="firstName"
               class="w-full px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 bg-gray-50 focus:bg-white"
               [class]="
                 firstNameError()
@@ -60,9 +59,7 @@ import { RegisterStore } from './register-store';
             <input
               id="lastName"
               type="text"
-              [(ngModel)]="registerStore.registerFormData().lastName"
-              (input)="onLastNameChange($event)"
-              name="lastName"
+              formControlName="lastName"
               class="w-full px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 bg-gray-50 focus:bg-white"
               [class]="
                 lastNameError()
@@ -89,9 +86,7 @@ import { RegisterStore } from './register-store';
             <input
               id="email"
               type="email"
-              [(ngModel)]="registerStore.registerFormData().email"
-              (input)="onEmailChange($event)"
-              name="email"
+              formControlName="email"
               class="w-full px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 bg-gray-50 focus:bg-white"
               [class]="
                 emailError()
@@ -119,9 +114,7 @@ import { RegisterStore } from './register-store';
               <input
                 id="password"
                 [type]="registerStore.showPassword() ? 'text' : 'password'"
-                [(ngModel)]="registerStore.registerFormData().password"
-                (input)="onPasswordChange($event)"
-                name="password"
+                formControlName="password"
                 class="w-full px-4 py-3 pr-12 border-2 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 bg-gray-50 focus:bg-white"
                 [class]="
                   passwordError()
@@ -171,9 +164,7 @@ import { RegisterStore } from './register-store';
                 [type]="
                   registerStore.showConfirmPassword() ? 'text' : 'password'
                 "
-                [(ngModel)]="registerStore.registerFormData().confirmPassword"
-                (input)="onConfirmPasswordChange($event)"
-                name="confirmPassword"
+                formControlName="confirmPassword"
                 class="w-full px-4 py-3 pr-12 border-2 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 bg-gray-50 focus:bg-white"
                 [class]="
                   confirmPasswordError()
@@ -275,9 +266,14 @@ import { RegisterStore } from './register-store';
   `,
   styles: [],
 })
-export class Register implements OnInit {
+export class Register implements OnInit, OnDestroy {
   // ✅ Solo inyectar el store
   registerStore = inject(RegisterStore);
+  private fb = inject(FormBuilder);
+
+  // ✅ Estado local del componente
+  registerForm!: FormGroup;
+  private subscriptions: Subscription[] = [];
 
   // ✅ Referencias a signals para el template
   firstNameError = this.registerStore.firstNameError;
@@ -289,33 +285,32 @@ export class Register implements OnInit {
   ngOnInit(): void {
     // ✅ Inicializar el formulario
     this.registerStore.resetRegisterForm();
+
+    // ✅ Crear formulario reactivo
+    this.registerForm = this.fb.group({
+      firstName: ['', [Validators.required, Validators.minLength(2)]],
+      lastName: ['', [Validators.required, Validators.minLength(2)]],
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required, Validators.minLength(6)]],
+      confirmPassword: ['', [Validators.required]]
+    });
+
+    // ✅ Sincronizar con el store
+    this.subscriptions.push(
+      this.registerForm.valueChanges.subscribe(value => {
+        this.registerStore.updateFormField('firstName', value.firstName);
+        this.registerStore.updateFormField('lastName', value.lastName);
+        this.registerStore.updateFormField('email', value.email);
+        this.registerStore.updateFormField('password', value.password);
+        this.registerStore.updateFormField('confirmPassword', value.confirmPassword);
+      })
+    );
   }
 
-  // ✅ Event handlers que delegan al store
-  onFirstNameChange(event: Event): void {
-    const target = event.target as HTMLInputElement;
-    this.registerStore.updateFormField('firstName', target.value);
+  ngOnDestroy(): void {
+    this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 
-  onLastNameChange(event: Event): void {
-    const target = event.target as HTMLInputElement;
-    this.registerStore.updateFormField('lastName', target.value);
-  }
-
-  onEmailChange(event: Event): void {
-    const target = event.target as HTMLInputElement;
-    this.registerStore.updateFormField('email', target.value);
-  }
-
-  onPasswordChange(event: Event): void {
-    const target = event.target as HTMLInputElement;
-    this.registerStore.updateFormField('password', target.value);
-  }
-
-  onConfirmPasswordChange(event: Event): void {
-    const target = event.target as HTMLInputElement;
-    this.registerStore.updateFormField('confirmPassword', target.value);
-  }
 
   togglePasswordVisibility(): void {
     this.registerStore.togglePasswordVisibility();
@@ -326,7 +321,9 @@ export class Register implements OnInit {
   }
 
   onSubmit(): void {
-    this.registerStore.submitRegistration();
+    if (this.registerForm.valid) {
+      this.registerStore.submitRegistration();
+    }
   }
 
   goToLogin(): void {

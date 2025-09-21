@@ -1,10 +1,11 @@
 import { CreateCustomerDto } from './dto/create-customer.dto';
+import { UpdateCustomerDto } from './dto/update-customer.dto';
 import { CustomersService } from './customers.service';
 export declare class CustomersController {
     private readonly customersService;
     constructor(customersService: CustomersService);
     create(createCustomerDto: CreateCustomerDto): Promise<import("./entities/customer.entity").Customer>;
-    findAll(search?: string, page?: string, limit?: string): Promise<import("../shared").ApiResponse<{
+    findAll(search?: string, isActive?: string, page?: string, limit?: string): Promise<import("../shared").ApiResponse<{
         customers: import("./entities/customer.entity").Customer[];
         total: number;
         page: number;
@@ -12,4 +13,8 @@ export declare class CustomersController {
     }>>;
     findOne(id: string): Promise<import("../shared").ApiResponse<import("./entities/customer.entity").Customer>>;
     getCustomerStats(id: string): Promise<any>;
+    update(id: string, updateCustomerDto: UpdateCustomerDto): Promise<import("../shared").ApiResponse<import("./entities/customer.entity").Customer>>;
+    remove(id: string): Promise<import("../shared").ApiResponse<{
+        message: string;
+    }>>;
 }

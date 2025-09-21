@@ -2,17 +2,19 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ApiResponse = void 0;
 class ApiResponse {
-    constructor(data, message, success = true) {
+    constructor(data, message, success = true, statusCode, path) {
         this.data = data;
         this.message = message;
         this.success = success;
         this.timestamp = new Date().toISOString();
+        this.statusCode = statusCode;
+        this.path = path;
     }
     static success(data, message) {
         return new ApiResponse(data, message, true);
     }
-    static error(data, message) {
-        return new ApiResponse(data, message, false);
+    static error(data, message, statusCode, path) {
+        return new ApiResponse(data, message, false, statusCode, path);
     }
     static created(data, message) {
         return new ApiResponse(data, message || 'Recurso creado exitosamente', true);

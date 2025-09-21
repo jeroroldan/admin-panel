@@ -2,12 +2,20 @@ import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { ConfigService } from '@nestjs/config';
+import helmet from 'helmet';
+import * as cookieParser from 'cookie-parser';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
+  // Security middleware
+  app.use(helmet());
+
   const configService = app.get(ConfigService);
+
+  // Cookie parser for httpOnly cookies
+  app.use(cookieParser());
 
   // Global validation pipe
   app.useGlobalPipes(new ValidationPipe({

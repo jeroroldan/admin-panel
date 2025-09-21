@@ -1,6 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 export interface LoginRequest {
   email: string;
@@ -28,11 +29,11 @@ export interface User {
 })
 export class LoginApiService {
   private http = inject(HttpClient);
-  private apiUrl = 'http://localhost:3000/api/auth'; // ✅ Ajusta según tu API
+  private apiUrl = `${environment.apiUrl}/auth`;
 
   login(loginData: LoginRequest): Observable<LoginResponse> {
-    console.log('📤 API Login Request:', loginData);
-
-    return this.http.post<LoginResponse>(`${this.apiUrl}/login`, loginData);
+    return this.http.post<LoginResponse>(`${this.apiUrl}/login`, loginData, {
+      withCredentials: true // ✅ Importante: enviar cookies con la petición
+    });
   }
 }

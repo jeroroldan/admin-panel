@@ -1,38 +1,108 @@
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { tap } from 'rxjs/operators';
+import { Router } from '@angular/router';
 
 // ✅ Definir UserRole directamente aquí
 export type UserRole = 'admin' | 'manager' | 'employee' | 'user';
+
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  isAuthenticated(): boolean {
-    const token = localStorage.getItem('token');
-    if (!token) {
-      return false;
-    }
+  private readonly apiUrl = `${environment.apiUrl}/auth`;
 
-    try {
-      const payload = JSON.parse(atob(token.split('.')[1]));
-      const now = Date.now() / 1000;
-      const isValid = payload.exp > now;
-      return isValid;
-    } catch (error) {
-      return false;
-    }
+  constructor(
+    private http: HttpClient,
+    private router: Router
+  ) {}
+
+  isAuthenticated(): boolean {
+    return !!this.getToken();
   }
 
-  login(token: string, user: any): void {
+  getToken(): string | null {
+    // First try to get from localStorage (for backward compatibility)
+    const storedToken = localStorage.getItem('token');
+    if (storedToken) {
+      return storedToken;
+    }
 
+    // Then try to get from user object
+    const user = this.getUser();
+    return user?.token || user?.access_token || null;
+  }
+
+  storeCredentials(token: string, user: any): void {
     localStorage.setItem('token', token);
-    localStorage.setItem('user', JSON.stringify(user));
+    // Also store the token in the user object for consistency
+    const userWithToken = { ...user, token };
+    localStorage.setItem('user', JSON.stringify(userWithToken));
+  }
+
+  validate(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/validate`).pipe(
+      tap((response: any) => {
+        if (response.user) {
+          this.storeUser(response.user);
+        }
+      })
+    );
+  }
+
+  login(email: string, password: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/login`, { email, password }, {
+      withCredentials: true // ✅ Importante: enviar cookies con la petición
+    }).pipe(
+      tap((response: any) => {
+        if (response.access_token && response.user) {
+          this.storeCredentials(response.access_token, response.user);
+        } else if (response.token && response.user) {
+          // Fallback for backward compatibility
+          this.storeCredentials(response.token, response.user);
+        }
+      })
+    );
+  }
+
+  register(userData: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/register`, userData).pipe(
+      tap((response: any) => {
+        if (response.user) {
+          this.storeUser(response.user);
+        }
+      })
+    );
   }
 
   logout(): void {
-    localStorage.removeItem('token');
+    // Clear localStorage first
+    this.clearUser();
+
+    // Then call backend logout to clear cookie
+    this.http.post(`${this.apiUrl}/logout`, {}, {
+      withCredentials: true // ✅ Importante: enviar cookies con la petición
+    }).subscribe({
+      next: () => {
+        this.router.navigate(['/auth/login']);
+      },
+      error: () => {
+        // Even if backend logout fails, we already cleared localStorage
+        this.router.navigate(['/auth/login']);
+      }
+    });
+  }
+
+  private storeUser(user: any): void {
+    localStorage.setItem('user', JSON.stringify(user));
+  }
+
+  private clearUser(): void {
     localStorage.removeItem('user');
-    console.log('✅ User logged out');
+    localStorage.removeItem('token');
   }
 
   getUser(): any {
@@ -42,10 +112,6 @@ export class AuthService {
 
   getCurrentUser(): any {
     return this.getUser();
-  }
-
-  getToken(): string | null {
-    return localStorage.getItem('token');
   }
 
   // ✅ Métodos para manejo de roles con tipado correcto
@@ -62,7 +128,7 @@ export class AuthService {
   hasAnyRole(roles: UserRole[]): boolean {
     const userRole = this.getUserRole();
     if (!userRole) {
-      console.log('❌ No user role found');
+
       return false;
     }
 

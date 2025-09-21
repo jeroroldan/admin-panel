@@ -42,12 +42,13 @@ interface MenuItem {
               />
             </svg>
           </div>
+          @if (!isCollapsed) {
           <h1
             class="text-xl font-bold text-gray-900 dark:text-white"
-            *ngIf="!isCollapsed"
           >
             SmartStore
           </h1>
+          }
         </div>
 
         <!-- Collapse Button -->
@@ -98,7 +99,9 @@ interface MenuItem {
                 />
               </svg>
 
-              <span *ngIf="!isCollapsed">{{ item.label }}</span>
+              @if (!isCollapsed) {
+              <span>{{ item.label }}</span>
+              }
 
               @if (item.badge && !isCollapsed) {
               <span
@@ -152,7 +155,9 @@ interface MenuItem {
                 />
               </svg>
 
-              <span *ngIf="!isCollapsed">{{ item.label }}</span>
+              @if (!isCollapsed) {
+              <span>{{ item.label }}</span>
+              }
 
               <!-- Tooltip for collapsed state -->
               @if (isCollapsed) {
@@ -182,7 +187,8 @@ interface MenuItem {
               >
                 <span class="text-white text-sm font-medium">JD</span>
               </div>
-              <div class="flex-1 min-w-0" *ngIf="!isCollapsed">
+              @if (!isCollapsed) {
+              <div class="flex-1 min-w-0">
                 <p
                   class="text-sm font-medium text-gray-900 dark:text-gray-100 truncate"
                 >
@@ -194,7 +200,6 @@ interface MenuItem {
               </div>
               <svg
                 class="w-4 h-4 text-gray-400"
-                *ngIf="!isCollapsed"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -206,6 +211,7 @@ interface MenuItem {
                   d="M19 9l-7 7-7-7"
                 />
               </svg>
+              }
             </button>
 
             <!-- Dropdown Menu -->

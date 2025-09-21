@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsNotEmpty, IsString, IsOptional, IsDateString } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsString, IsOptional, IsDateString, Length, Matches, IsPostalCode } from 'class-validator';
 
 export class CreateCustomerDto {
   @ApiProperty({
@@ -8,6 +8,7 @@ export class CreateCustomerDto {
   })
   @IsString({ message: 'Nombre debe ser una cadena' })
   @IsNotEmpty({ message: 'Nombre es requerido' })
+  @Length(2, 50, { message: 'Nombre debe tener entre 2 y 50 caracteres' })
   firstName: string;
 
   @ApiProperty({
@@ -16,6 +17,7 @@ export class CreateCustomerDto {
   })
   @IsString({ message: 'Apellido debe ser una cadena' })
   @IsNotEmpty({ message: 'Apellido es requerido' })
+  @Length(2, 50, { message: 'Apellido debe tener entre 2 y 50 caracteres' })
   lastName: string;
 
   @ApiProperty({
@@ -32,8 +34,8 @@ export class CreateCustomerDto {
     example: '+1234567890',
     required: false
   })
-  @IsString({ message: 'Teléfono debe ser una cadena' })
   @IsOptional()
+  @Matches(/^\+?[1-9]\d{1,14}$/, { message: 'Teléfono debe ser válido' })
   phone?: string;
 
   @ApiProperty({
@@ -43,6 +45,7 @@ export class CreateCustomerDto {
   })
   @IsString({ message: 'Dirección debe ser una cadena' })
   @IsOptional()
+  @Length(5, 200, { message: 'Dirección debe tener entre 5 y 200 caracteres' })
   address?: string;
 
   @ApiProperty({
@@ -52,6 +55,7 @@ export class CreateCustomerDto {
   })
   @IsString({ message: 'Ciudad debe ser una cadena' })
   @IsOptional()
+  @Length(2, 50, { message: 'Ciudad debe tener entre 2 y 50 caracteres' })
   city?: string;
 
   @ApiProperty({
@@ -61,6 +65,7 @@ export class CreateCustomerDto {
   })
   @IsString({ message: 'Estado debe ser una cadena' })
   @IsOptional()
+  @Length(2, 50, { message: 'Estado debe tener entre 2 y 50 caracteres' })
   state?: string;
 
   @ApiProperty({
@@ -70,6 +75,7 @@ export class CreateCustomerDto {
   })
   @IsString({ message: 'Código postal debe ser una cadena' })
   @IsOptional()
+  @Length(4, 8, { message: 'Código postal debe tener entre 4 y 8 caracteres' })
   postalCode?: string;
 
   @ApiProperty({
@@ -79,6 +85,7 @@ export class CreateCustomerDto {
   })
   @IsString({ message: 'País debe ser una cadena' })
   @IsOptional()
+  @Length(2, 50, { message: 'País debe tener entre 2 y 50 caracteres' })
   country?: string;
 
   @ApiProperty({
@@ -88,6 +95,7 @@ export class CreateCustomerDto {
   })
   @IsString({ message: 'Empresa debe ser una cadena' })
   @IsOptional()
+  @Length(2, 100, { message: 'Empresa debe tener entre 2 y 100 caracteres' })
   company?: string;
 
   @ApiProperty({
@@ -106,5 +114,6 @@ export class CreateCustomerDto {
   })
   @IsString({ message: 'Notas deben ser una cadena' })
   @IsOptional()
+  @Length(0, 500, { message: 'Notas deben tener máximo 500 caracteres' })
   notes?: string;
 }

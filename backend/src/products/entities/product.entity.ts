@@ -1,6 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToMany } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { OrderItem } from '../../orders/entities/order-item.entity';
+import { SaleItem } from '../../sales/entities/sale-item.entity';
 
 export enum ProductStatus {
   ACTIVE = 'active',
@@ -89,6 +90,10 @@ export class Product {
   @ApiProperty({ description: 'Items de pedidos' })
   @OneToMany(() => OrderItem, orderItem => orderItem.product)
   orderItems: OrderItem[];
+
+  @ApiProperty({ description: 'Items de ventas' })
+  @OneToMany(() => SaleItem, saleItem => saleItem.product)
+  saleItems: SaleItem[];
 
   @ApiProperty({ description: 'Fecha de creación' })
   @CreateDateColumn()

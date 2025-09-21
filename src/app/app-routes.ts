@@ -3,6 +3,8 @@ import { AuthGuard } from './auth/guards/auth.guard';
 import { RoleGuard } from './auth/guards/role.guard';
 import { UserRole } from './auth';
 
+import { CustomersComponent } from './pages/customers/customers';
+
 export const routes: Routes = [
   // Rutas de autenticación (públicas, sin layout)
   {
@@ -86,14 +88,40 @@ export const routes: Routes = [
         path: 'customers',
         canActivate: [RoleGuard],
         loadComponent: () =>
-          import('./pages/customers/index/list').then(
-            (m) => m.CustomersList
+          import('./pages/customers/customers').then(
+            (m) => m.CustomersComponent
           ),
-        title: 'Customers - Admin Panel',
+        title: 'Clientes - Admin Panel',
         data: {
-          breadcrumb: 'Customers',
+          breadcrumb: 'Clientes',
           roles: ['admin', 'manager'] as UserRole[], // ✅ Tipado correcto
         },
+      },
+      {
+        path: 'sales',
+        canActivate: [RoleGuard],
+        children: [
+          {
+            path: '',
+            loadComponent: () =>
+              import('./pages/sales/sales').then((m) => m.SalesComponent),
+            title: 'Sales - Admin Panel',
+            data: {
+              breadcrumb: 'Sales',
+              roles: ['admin', 'manager', 'employee'] as UserRole[],
+            },
+          },
+          {
+            path: 'create',
+            loadComponent: () =>
+              import('./pages/sales/sales-create').then((m) => m.SalesCreateComponent),
+            title: 'Create Sale - Admin Panel',
+            data: {
+              breadcrumb: 'Create Sale',
+              roles: ['admin', 'manager', 'employee'] as UserRole[],
+            },
+          },
+        ],
       },
     ],
   },

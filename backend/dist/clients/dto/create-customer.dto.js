@@ -22,6 +22,7 @@ __decorate([
     }),
     (0, class_validator_1.IsString)({ message: 'Nombre debe ser una cadena' }),
     (0, class_validator_1.IsNotEmpty)({ message: 'Nombre es requerido' }),
+    (0, class_validator_1.Length)(2, 50, { message: 'Nombre debe tener entre 2 y 50 caracteres' }),
     __metadata("design:type", String)
 ], CreateCustomerDto.prototype, "firstName", void 0);
 __decorate([
@@ -31,6 +32,7 @@ __decorate([
     }),
     (0, class_validator_1.IsString)({ message: 'Apellido debe ser una cadena' }),
     (0, class_validator_1.IsNotEmpty)({ message: 'Apellido es requerido' }),
+    (0, class_validator_1.Length)(2, 50, { message: 'Apellido debe tener entre 2 y 50 caracteres' }),
     __metadata("design:type", String)
 ], CreateCustomerDto.prototype, "lastName", void 0);
 __decorate([
@@ -49,8 +51,8 @@ __decorate([
         example: '+1234567890',
         required: false
     }),
-    (0, class_validator_1.IsString)({ message: 'Teléfono debe ser una cadena' }),
     (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.Matches)(/^\+?[1-9]\d{1,14}$/, { message: 'Teléfono debe ser válido' }),
     __metadata("design:type", String)
 ], CreateCustomerDto.prototype, "phone", void 0);
 __decorate([
@@ -61,6 +63,7 @@ __decorate([
     }),
     (0, class_validator_1.IsString)({ message: 'Dirección debe ser una cadena' }),
     (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.Length)(5, 200, { message: 'Dirección debe tener entre 5 y 200 caracteres' }),
     __metadata("design:type", String)
 ], CreateCustomerDto.prototype, "address", void 0);
 __decorate([
@@ -71,6 +74,7 @@ __decorate([
     }),
     (0, class_validator_1.IsString)({ message: 'Ciudad debe ser una cadena' }),
     (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.Length)(2, 50, { message: 'Ciudad debe tener entre 2 y 50 caracteres' }),
     __metadata("design:type", String)
 ], CreateCustomerDto.prototype, "city", void 0);
 __decorate([
@@ -81,6 +85,7 @@ __decorate([
     }),
     (0, class_validator_1.IsString)({ message: 'Estado debe ser una cadena' }),
     (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.Length)(2, 50, { message: 'Estado debe tener entre 2 y 50 caracteres' }),
     __metadata("design:type", String)
 ], CreateCustomerDto.prototype, "state", void 0);
 __decorate([
@@ -91,6 +96,7 @@ __decorate([
     }),
     (0, class_validator_1.IsString)({ message: 'Código postal debe ser una cadena' }),
     (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.Length)(4, 8, { message: 'Código postal debe tener entre 4 y 8 caracteres' }),
     __metadata("design:type", String)
 ], CreateCustomerDto.prototype, "postalCode", void 0);
 __decorate([
@@ -101,6 +107,7 @@ __decorate([
     }),
     (0, class_validator_1.IsString)({ message: 'País debe ser una cadena' }),
     (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.Length)(2, 50, { message: 'País debe tener entre 2 y 50 caracteres' }),
     __metadata("design:type", String)
 ], CreateCustomerDto.prototype, "country", void 0);
 __decorate([
@@ -111,6 +118,7 @@ __decorate([
     }),
     (0, class_validator_1.IsString)({ message: 'Empresa debe ser una cadena' }),
     (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.Length)(2, 100, { message: 'Empresa debe tener entre 2 y 100 caracteres' }),
     __metadata("design:type", String)
 ], CreateCustomerDto.prototype, "company", void 0);
 __decorate([
@@ -131,6 +139,7 @@ __decorate([
     }),
     (0, class_validator_1.IsString)({ message: 'Notas deben ser una cadena' }),
     (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.Length)(0, 500, { message: 'Notas deben tener máximo 500 caracteres' }),
     __metadata("design:type", String)
 ], CreateCustomerDto.prototype, "notes", void 0);
 //# sourceMappingURL=create-customer.dto.js.map

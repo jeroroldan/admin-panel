@@ -13,6 +13,7 @@ exports.Product = exports.ProductStatus = void 0;
 const typeorm_1 = require("typeorm");
 const swagger_1 = require("@nestjs/swagger");
 const order_item_entity_1 = require("../../orders/entities/order-item.entity");
+const sale_item_entity_1 = require("../../sales/entities/sale-item.entity");
 var ProductStatus;
 (function (ProductStatus) {
     ProductStatus["ACTIVE"] = "active";
@@ -122,6 +123,11 @@ __decorate([
     (0, typeorm_1.OneToMany)(() => order_item_entity_1.OrderItem, orderItem => orderItem.product),
     __metadata("design:type", Array)
 ], Product.prototype, "orderItems", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({ description: 'Items de ventas' }),
+    (0, typeorm_1.OneToMany)(() => sale_item_entity_1.SaleItem, saleItem => saleItem.product),
+    __metadata("design:type", Array)
+], Product.prototype, "saleItems", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({ description: 'Fecha de creación' }),
     (0, typeorm_1.CreateDateColumn)(),

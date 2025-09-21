@@ -10,16 +10,27 @@ export declare class AuthService {
     validateUser(email: string, password: string): Promise<any>;
     login(loginDto: LoginDto): Promise<{
         access_token: string;
+        refresh_token: string;
         user: {
-            id: any;
             email: any;
             firstName: any;
             lastName: any;
             role: any;
         };
     }>;
+    refreshToken(refreshToken: string): Promise<{
+        access_token: string;
+        user: {
+            id: string;
+            email: string;
+            firstName: string;
+            lastName: string;
+            role: import("../users/entities/user.entity").UserRole;
+        };
+    }>;
     register(registerDto: RegisterDto): Promise<{
         access_token: string;
+        refresh_token: string;
         user: {
             id: string;
             email: string;

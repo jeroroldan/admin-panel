@@ -14,8 +14,9 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CustomersService = void 0;
 const common_1 = require("@nestjs/common");
-const typeorm_1 = require("@nestjs/typeorm");
-const typeorm_2 = require("typeorm");
+const typeorm_1 = require("typeorm");
+const typeorm_2 = require("@nestjs/typeorm");
+const typeorm_3 = require("typeorm");
 const shared_1 = require("../shared");
 const customer_entity_1 = require("./entities/customer.entity");
 let CustomersService = class CustomersService {
@@ -24,8 +25,9 @@ let CustomersService = class CustomersService {
     }
     async create(createCustomerDto) {
         if (createCustomerDto.email) {
-            const existingCustomer = await this.customerRepository.findOne({
-                where: { email: createCustomerDto.email },
+            const existingCustomer = await this.customerRepository.findOneBy({
+                email: createCustomerDto.email,
+                deletedAt: (0, typeorm_1.IsNull)(),
             });
             if (existingCustomer) {
                 throw new common_1.ConflictException('Ya existe un cliente con este email');
@@ -34,11 +36,15 @@ let CustomersService = class CustomersService {
         const customer = this.customerRepository.create(createCustomerDto);
         return this.customerRepository.save(customer);
     }
-    async findAll(search, page = 1, limit = 10) {
+    async findAll(search, isActive, page = 1, limit = 10) {
         const skip = (page - 1) * limit;
-        let queryBuilder = this.customerRepository.createQueryBuilder('customer');
+        let queryBuilder = this.customerRepository.createQueryBuilder('customer')
+            .where('customer.deletedAt IS NULL');
         if (search) {
-            queryBuilder = queryBuilder.where('(customer.firstName LIKE :search OR customer.lastName LIKE :search OR customer.email LIKE :search OR customer.phone LIKE :search OR customer.company LIKE :search)', { search: `%${search}%` });
+            queryBuilder = queryBuilder.andWhere('(customer.firstName LIKE :search OR customer.lastName LIKE :search OR customer.email LIKE :search OR customer.phone LIKE :search OR customer.company LIKE :search)', { search: `%${search}%` });
+        }
+        if (isActive !== undefined) {
+            queryBuilder = queryBuilder.andWhere('customer.isActive = :isActive', { isActive });
         }
         queryBuilder = queryBuilder
             .orderBy('customer.createdAt', 'DESC')
@@ -63,11 +69,33 @@ let CustomersService = class CustomersService {
         }
         return shared_1.ApiResponse.success(customer, 'Cliente obtenido exitosamente');
     }
+    async update(id, updateCustomerDto) {
+        const response = await this.findOne(id);
+        const customer = response.data;
+        if (updateCustomerDto.email && updateCustomerDto.email !== customer.email) {
+            const existingCustomer = await this.customerRepository.findOneBy({
+                email: updateCustomerDto.email,
+                deletedAt: (0, typeorm_1.IsNull)(),
+            });
+            if (existingCustomer) {
+                throw new common_1.ConflictException('Ya existe un cliente con este email');
+            }
+        }
+        await this.customerRepository.update(id, updateCustomerDto);
+        const updatedResponse = await this.findOne(id);
+        return shared_1.ApiResponse.success(updatedResponse.data, 'Cliente actualizado exitosamente');
+    }
+    async remove(id) {
+        const response = await this.findOne(id);
+        const customer = response.data;
+        await this.customerRepository.softRemove(customer);
+        return shared_1.ApiResponse.success({ message: `Cliente ${id} eliminado exitosamente` }, 'Cliente eliminado exitosamente');
+    }
     async findByEmail(email) {
-        return this.customerRepository.findOne({ where: { email } });
+        return this.customerRepository.findOneBy({ email, deletedAt: (0, typeorm_1.IsNull)() });
     }
     async findByPhone(phone) {
-        return this.customerRepository.findOne({ where: { phone } });
+        return this.customerRepository.findOneBy({ phone, deletedAt: (0, typeorm_1.IsNull)() });
     }
     async getCustomerStats(id) {
         const customer = await this.customerRepository
@@ -94,7 +122,7 @@ let CustomersService = class CustomersService {
 exports.CustomersService = CustomersService;
 exports.CustomersService = CustomersService = __decorate([
     (0, common_1.Injectable)(),
-    __param(0, (0, typeorm_1.InjectRepository)(customer_entity_1.Customer)),
-    __metadata("design:paramtypes", [typeorm_2.Repository])
+    __param(0, (0, typeorm_2.InjectRepository)(customer_entity_1.Customer)),
+    __metadata("design:paramtypes", [typeorm_3.Repository])
 ], CustomersService);
 //# sourceMappingURL=customers.service.js.map

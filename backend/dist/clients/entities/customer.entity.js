@@ -101,6 +101,11 @@ __decorate([
     (0, typeorm_1.UpdateDateColumn)(),
     __metadata("design:type", Date)
 ], Customer.prototype, "updatedAt", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({ description: 'Fecha de eliminación suave' }),
+    (0, typeorm_1.DeleteDateColumn)(),
+    __metadata("design:type", Date)
+], Customer.prototype, "deletedAt", void 0);
 exports.Customer = Customer = __decorate([
     (0, typeorm_1.Entity)('customers')
 ], Customer);

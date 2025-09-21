@@ -16,8 +16,8 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CustomersService } from './customers.service';
 
 @ApiTags('Customers')
-@ApiBearerAuth()
-@UseGuards(JwtAuthGuard)
+// @ApiBearerAuth()
+// @UseGuards(JwtAuthGuard)
 @Controller('customers')
 export class CustomersController {
   constructor(private readonly customersService: CustomersService) {}
@@ -35,6 +35,12 @@ export class CustomersController {
     name: 'search',
     required: false,
     description: 'Buscar clientes por nombre, email, teléfono o empresa',
+  })
+  @ApiQuery({
+    name: 'isActive',
+    required: false,
+    description: 'Filtrar por estado activo/inactivo',
+    example: true,
   })
   @ApiQuery({
     name: 'page',
@@ -55,13 +61,15 @@ export class CustomersController {
   @Get()
   async findAll(
     @Query('search') search?: string,
+    @Query('isActive') isActive?: string,
     @Query('page') page: string = '1',
     @Query('limit') limit: string = '10',
   ) {
     const pageNumber = parseInt(page) || 1;
     const limitNumber = parseInt(limit) || 10;
+    const isActiveBoolean = isActive !== undefined ? isActive === 'true' : undefined;
 
-    return this.customersService.findAll(search, pageNumber, limitNumber);
+    return this.customersService.findAll(search, isActiveBoolean, pageNumber, limitNumber);
   }
 
   @ApiOperation({ summary: 'Obtener un cliente por ID' })
@@ -83,23 +91,23 @@ export class CustomersController {
     return this.customersService.getCustomerStats(id);
   }
 
-  // @ApiOperation({ summary: 'Actualizar un cliente' })
-  // @ApiResponse({ status: 200, description: 'Cliente actualizado exitosamente' })
-  // @ApiResponse({ status: 404, description: 'Cliente no encontrado' })
-  // @ApiResponse({ status: 409, description: 'Email ya existe' })
-  // @Patch(':id')
-  // update(
-  //   @Param('id') id: string,
-  //   @Body() updateCustomerDto: UpdateCustomerDto,
-  // ) {
-  //   return this.customersService.update(id, updateCustomerDto);
-  // }
+  @ApiOperation({ summary: 'Actualizar un cliente' })
+  @ApiResponse({ status: 200, description: 'Cliente actualizado exitosamente' })
+  @ApiResponse({ status: 404, description: 'Cliente no encontrado' })
+  @ApiResponse({ status: 409, description: 'Email ya existe' })
+  @Patch(':id')
+  update(
+    @Param('id') id: string,
+    @Body() updateCustomerDto: UpdateCustomerDto,
+  ) {
+    return this.customersService.update(id, updateCustomerDto);
+  }
 
-  // @ApiOperation({ summary: 'Eliminar un cliente' })
-  // @ApiResponse({ status: 200, description: 'Cliente eliminado exitosamente' })
-  // @ApiResponse({ status: 404, description: 'Cliente no encontrado' })
-  // @Delete(':id')
-  // remove(@Param('id') id: string) {
-  //   return this.customersService.remove(id);
-  // }
+  @ApiOperation({ summary: 'Eliminar un cliente' })
+  @ApiResponse({ status: 200, description: 'Cliente eliminado exitosamente' })
+  @ApiResponse({ status: 404, description: 'Cliente no encontrado' })
+  @Delete(':id')
+  remove(@Param('id') id: string) {
+    return this.customersService.remove(id);
+  }
 }

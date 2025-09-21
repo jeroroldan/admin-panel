@@ -55,8 +55,8 @@ const initialState: LoginState = {
 
   loginForm: {
     data: {
-      email: '',
-      password: '',
+      email: 'admin@test.com',
+      password: '1234',
       rememberMe: false,
     },
     validation: {
@@ -92,9 +92,9 @@ function validateLoginForm(data: LoginFormData): LoginFormValidation {
   // Validar password
   if (!data.password) {
     validation.password.errors.push('La contraseña es requerida');
-  } else if (data.password.length < 3) {
+  } else if (data.password.length < 6) {
     validation.password.errors.push(
-      'La contraseña debe tener al menos 3 caracteres'
+      'La contraseña debe tener al menos 6 caracteres'
     );
   } else {
     validation.password.isValid = true;
@@ -156,8 +156,7 @@ export class AuthStore extends signalStore(
 
         // Si ya está autenticado, redirigir
         if (authService.isAuthenticated()) {
-          console.log('User already authenticated, redirecting to:', returnUrl);
-          router.navigate([returnUrl]);
+          router.navigateByUrl(returnUrl);
         }
       },
 
@@ -229,7 +228,6 @@ export class AuthStore extends signalStore(
           password: currentForm.data.password,
         };
 
-        console.log('📤 Submitting login:', { email: loginData.email });
         // ✅ Usar this.login en lugar de storeMethods.login
         this.login(loginData);
       },
@@ -237,91 +235,44 @@ export class AuthStore extends signalStore(
       login: rxMethod<LoginRequest>(
         pipe(
           tap(() => {
-            console.log('🔄 Starting login process...');
             patchState(store, {
               loginLoading: true,
               loginError: null,
             });
           }),
           switchMap((loginData) =>
-            loginApiService.login(loginData).pipe(
-              tap((response: LoginResponse) => {
-                console.log('✅ Login API response:', response);
-                console.log('🔍 Response keys:', Object.keys(response));
-                console.log('🔍 Access token:', response.access_token);
+            authService.login(loginData.email, loginData.password).pipe(
+              tap((response: any) => {
+                // ✅ Verificar que el AuthService guardó correctamente el token
+                const isAuth = authService.isAuthenticated();
+                const token = authService.getToken();
 
-                // ✅ Verificar que el token existe antes de guardar
-                if (!response.access_token) {
-                  console.error('❌ No access_token in response:', response);
+                if (!isAuth || !token) {
                   patchState(store, {
                     loginLoading: false,
-                    loginError: 'Token no recibido del servidor',
+                    loginError: 'Error de autenticación: token no guardado correctamente',
                   });
                   return;
                 }
 
-                // ✅ Guardar token y usuario
-                authService.login(response.access_token, response.user);
-
-                // ✅ Verificar que se guardó correctamente
-                const isAuth = authService.isAuthenticated();
-                const storedToken = authService.getToken();
-                console.log('🔍 Is authenticated after login:', isAuth);
-                console.log(
-                  '🔍 Stored token:',
-                  storedToken ? 'Token exists' : 'No token stored'
-                );
+                // ✅ Obtener datos del usuario desde AuthService
+                const user = authService.getCurrentUser();
 
                 patchState(store, {
-                  user: response.user,
+                  user: user,
                   loginLoading: false,
                 });
 
                 // ✅ Solo navegar si la autenticación es exitosa
                 if (isAuth) {
-                  // ✅ Navegar después de un pequeño delay
+                  const returnUrl = store.returnUrl();
+                  // Navigate directly to the return URL
                   setTimeout(() => {
-                    const returnUrl = store.returnUrl();
-                    console.log('🔄 Redirecting to:', returnUrl);
-
-                    router.navigate([returnUrl]).then(
-                      (success) => {
-                        console.log('✅ Navigation success:', success);
-                        console.log('🔍 Current URL:', router.url);
-                        console.log('🎯 Target URL was:', returnUrl);
-
-                        if (success) {
-                          const currentUrl = router.url;
-                          if (
-                            returnUrl === '/dashboard' &&
-                            !currentUrl.includes('/dashboard')
-                          ) {
-                            console.log(
-                              '⚠️ Expected dashboard but got:',
-                              currentUrl
-                            );
-                            router.navigate(['/dashboard']);
-                          } else {
-                            console.log(
-                              '✅ Successfully navigated to:',
-                              currentUrl
-                            );
-                          }
-                        } else {
-                          console.log(
-                            '⚠️ Navigation returned false, trying dashboard fallback'
-                          );
-                          router.navigate(['/dashboard']);
-                        }
-                      },
-                      (error) => {
-                        console.error('❌ Navigation failed:', error);
-                        router.navigate(['/dashboard']);
-                      }
-                    );
-                  }, 100); // Reducir delay
+                    router.navigateByUrl(returnUrl).catch(() => {
+                      router.navigateByUrl('/dashboard');
+                    });
+                  }, 100);
                 } else {
-                  console.error('❌ Authentication failed after login');
                   patchState(store, {
                     loginLoading: false,
                     loginError: 'Error de autenticación',
@@ -329,13 +280,6 @@ export class AuthStore extends signalStore(
                 }
               }),
               catchError((error: any) => {
-                console.error('❌ Login failed:', error);
-                console.error('❌ Error details:', {
-                  status: error.status,
-                  message: error.message,
-                  error: error.error,
-                });
-
                 const errorMessage =
                   error.error?.message ||
                   error.message ||
@@ -367,11 +311,10 @@ export class AuthStore extends signalStore(
 
   withHooks({
     onInit(store) {
-      console.log('🚀 AuthStore initialized');
       store.initializeStore();
     },
     onDestroy() {
-      console.log('💥 AuthStore destroyed');
+      // Cleanup if needed
     },
   })
 ) {}

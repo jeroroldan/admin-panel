@@ -14,6 +14,7 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthController = void 0;
 const common_1 = require("@nestjs/common");
+const throttler_1 = require("@nestjs/throttler");
 const swagger_1 = require("@nestjs/swagger");
 const auth_service_1 = require("./auth.service");
 const login_dto_1 = require("./dto/login.dto");
@@ -23,12 +24,25 @@ let AuthController = class AuthController {
     constructor(authService) {
         this.authService = authService;
     }
-    async login(loginDto) {
-        console.log(loginDto);
-        return this.authService.login(loginDto);
+    async login(loginDto, res) {
+        const result = await this.authService.login(loginDto);
+        res.cookie('access_token', result.access_token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'strict',
+            maxAge: 15 * 60 * 1000,
+        });
+        return { user: result.user, access_token: result.access_token, refresh_token: result.refresh_token };
     }
-    async register(registerDto) {
-        return this.authService.register(registerDto);
+    async register(registerDto, res) {
+        const result = await this.authService.register(registerDto);
+        res.cookie('access_token', result.access_token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'strict',
+            maxAge: 15 * 60 * 1000,
+        });
+        return { user: result.user };
     }
     getProfile(req) {
         return req.user;
@@ -36,16 +50,22 @@ let AuthController = class AuthController {
     validateToken(req) {
         return { valid: true, user: req.user };
     }
+    async logout(res) {
+        res.clearCookie('access_token');
+        return { message: 'Logged out successfully' };
+    }
 };
 exports.AuthController = AuthController;
 __decorate([
     (0, swagger_1.ApiOperation)({ summary: 'Iniciar sesión' }),
     (0, swagger_1.ApiResponse)({ status: 200, description: 'Login exitoso' }),
     (0, swagger_1.ApiResponse)({ status: 401, description: 'Credenciales inválidas' }),
+    (0, common_1.UseGuards)(throttler_1.ThrottlerGuard),
     (0, common_1.Post)('login'),
     __param(0, (0, common_1.Body)()),
+    __param(1, (0, common_1.Res)({ passthrough: true })),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [login_dto_1.LoginDto]),
+    __metadata("design:paramtypes", [login_dto_1.LoginDto, Object]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "login", null);
 __decorate([
@@ -54,8 +74,9 @@ __decorate([
     (0, swagger_1.ApiResponse)({ status: 400, description: 'Error en los datos de registro' }),
     (0, common_1.Post)('register'),
     __param(0, (0, common_1.Body)()),
+    __param(1, (0, common_1.Res)({ passthrough: true })),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [register_dto_1.RegisterDto]),
+    __metadata("design:paramtypes", [register_dto_1.RegisterDto, Object]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "register", null);
 __decorate([
@@ -82,6 +103,13 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", void 0)
 ], AuthController.prototype, "validateToken", null);
+__decorate([
+    (0, common_1.Post)('logout'),
+    __param(0, (0, common_1.Res)({ passthrough: true })),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "logout", null);
 exports.AuthController = AuthController = __decorate([
     (0, swagger_1.ApiTags)('Authentication'),
     (0, common_1.Controller)('auth'),
